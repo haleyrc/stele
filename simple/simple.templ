@@ -1,0 +1,81 @@
+package simple
+
+import (
+	"fmt"
+
+	"github.com/haleyrc/stele"
+	"github.com/haleyrc/stele/simple/internal/components"
+)
+
+type Theme struct{}
+
+func New() Theme {
+	return Theme{}
+}
+
+templ (t Theme) Archive(b *stele.Blog) {
+	@components.Layout("Archive", b) {
+		<ul>
+			for _, bucket := range b.Posts.ByYear() {
+				<li>
+					<a class="hover:underline" href={ templ.URL("/archive/" + bucket.Key) }>
+						{ bucket.Key } ({ fmt.Sprintf("%d", len(bucket.Posts)) })
+					</a>
+				</li>
+			}
+		</ul>
+	}
+}
+
+templ (t Theme) Index(b *stele.Blog) {
+	@components.Layout("Home Page", b) {
+		@components.Post(b.Posts.Latest())
+		if len(b.Posts.MostRecent(11)) > 1 {
+			<hr class="my-4"/>
+			<section>
+				<h2 class="text-lg font-extralight pb-2">Recent posts</h2>
+				@components.PostList(b.Posts.MostRecent(11)[1:])
+			</section>
+		}
+	}
+}
+
+templ (t Theme) Page(b *stele.Blog, curr stele.Page) {
+	@components.Layout(curr.Slug, b) {
+		@templ.Raw(curr.Content)
+	}
+}
+
+templ (t Theme) Post(b *stele.Blog, p stele.Post) {
+	@components.Layout(p.Title, b) {
+		@components.Post(p)
+	}
+}
+
+templ (t Theme) PostsForTag(b *stele.Blog, bucket stele.PostBucket) {
+	@components.Layout("Posts tagged "+bucket.Key, b) {
+		<h1 class="text-xl font-bold pb-2">Posts tagged "{ bucket.Key }"</h1>
+		@components.PostList(bucket.Posts)
+	}
+}
+
+templ (t Theme) PostsForYear(b *stele.Blog, bucket stele.PostBucket) {
+	@components.Layout("Posts from "+bucket.Key, b) {
+		<h1 class="text-xl font-bold pb-2">Posts from { bucket.Key }</h1>
+		@components.PostList(bucket.Posts)
+	}
+}
+
+templ (t Theme) Tags(b *stele.Blog) {
+	@components.Layout("Tags", b) {
+		<ul>
+			for _, bucket := range b.Posts.ByTag() {
+				<li>
+					<a class="hover:underline" href={ templ.URL("/tags/" + bucket.Key) }>
+						{ bucket.Key } ({ fmt.Sprintf("%d", len(bucket.Posts)) })
+					</a>
+				</li>
+			}
+		</ul>
+	}
+}
