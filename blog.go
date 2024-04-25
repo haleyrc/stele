@@ -89,9 +89,16 @@ func (b *Blog) Load() error {
 	return nil
 }
 
+type atomLink struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:"rel,attr"`
+	Type string `xml:"type,attr"`
+}
+
 type channel struct {
 	Title         string   `xml:"title"`
 	Link          string   `xml:"link"`
+	AtomLink      atomLink `xml:"atom:link"`
 	Description   string   `xml:"description"`
 	Category      []string `xml:"category"`
 	Copyright     string   `xml:"copyright"`
@@ -103,8 +110,13 @@ type channel struct {
 
 func blogToChannel(b *Blog) channel {
 	c := channel{
-		Title:       b.Config.Name,
-		Link:        b.Config.BaseURL,
+		Title: b.Config.Name,
+		Link:  b.Config.BaseURL,
+		AtomLink: atomLink{
+			Href: b.Config.BaseURL + "/rss.xml",
+			Rel:  "self",
+			Type: "application/rss+xml",
+		},
 		Description: b.Config.Description,
 		Category:    b.Config.Categories,
 		Copyright: fmt.Sprintf(
@@ -131,7 +143,7 @@ func blogToChannel(b *Blog) channel {
 
 func (c channel) Render(ctx context.Context, w io.Writer) error {
 	fmt.Fprintln(w, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>")
-	fmt.Fprintln(w, "<rss version=\"2.0\">")
+	fmt.Fprintln(w, "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">")
 	fmt.Fprintln(w)
 
 	enc := xml.NewEncoder(w)
