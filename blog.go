@@ -125,7 +125,7 @@ func blogToChannel(b *Blog) channel {
 			b.Config.Author,
 		),
 		Language:      "en", // TODO
-		LastBuildDate: time.Now().Format(time.RFC822),
+		LastBuildDate: time.Now().Format(time.RFC1123Z),
 	}
 
 	for _, p := range b.Posts {
@@ -134,7 +134,7 @@ func blogToChannel(b *Blog) channel {
 			Link:        fmt.Sprintf("%s/posts/%s", b.Config.BaseURL, p.Slug),
 			Description: p.Description,
 			Category:    p.Tags,
-			PubDate:     p.Timestamp.Format(time.RFC822),
+			PubDate:     p.Timestamp.Format(time.RFC1123Z),
 		})
 	}
 
