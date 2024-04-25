@@ -108,28 +108,32 @@ type channel struct {
 	Items         []item   `xml:"item"`
 }
 
-func blogToChannel(b *Blog) channel {
-	c := channel{
-		Title: b.Config.Name,
-		Link:  b.Config.BaseURL,
-		AtomLink: atomLink{
-			Href: b.Config.BaseURL + "/rss.xml",
-			Rel:  "self",
-			Type: "application/rss+xml",
+func blogToRSS(b *Blog) rss {
+	feed := rss{
+		Version: "2.0",
+		NSAtom:  "http://www.w3.org/2005/Atom",
+		Channel: channel{
+			Title: b.Config.Name,
+			Link:  b.Config.BaseURL,
+			AtomLink: atomLink{
+				Href: b.Config.BaseURL + "/rss.xml",
+				Rel:  "self",
+				Type: "application/rss+xml",
+			},
+			Description: b.Config.Description,
+			Category:    b.Config.Categories,
+			Copyright: fmt.Sprintf(
+				"Copyright %d %s",
+				b.Posts.Latest().Timestamp.Year(),
+				b.Config.Author,
+			),
+			Language:      "en", // TODO
+			LastBuildDate: time.Now().Format(time.RFC1123Z),
 		},
-		Description: b.Config.Description,
-		Category:    b.Config.Categories,
-		Copyright: fmt.Sprintf(
-			"Copyright %d %s",
-			b.Posts.Latest().Timestamp.Year(),
-			b.Config.Author,
-		),
-		Language:      "en", // TODO
-		LastBuildDate: time.Now().Format(time.RFC1123Z),
 	}
 
 	for _, p := range b.Posts {
-		c.Items = append(c.Items, item{
+		feed.Channel.Items = append(feed.Channel.Items, item{
 			Title:       p.Title,
 			Link:        fmt.Sprintf("%s/posts/%s", b.Config.BaseURL, p.Slug),
 			GUID:        fmt.Sprintf("%s/posts/%s", b.Config.BaseURL, p.Slug),
@@ -139,23 +143,7 @@ func blogToChannel(b *Blog) channel {
 		})
 	}
 
-	return c
-}
-
-func (c channel) Render(ctx context.Context, w io.Writer) error {
-	fmt.Fprintln(w, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>")
-	fmt.Fprintln(w, "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">")
-	fmt.Fprintln(w)
-
-	enc := xml.NewEncoder(w)
-	enc.Indent("", "  ")
-	if err := enc.Encode(c); err != nil {
-		return errf("channel: render", err)
-	}
-
-	fmt.Fprintln(w)
-
-	return nil
+	return feed
 }
 
 type Config struct {
@@ -423,6 +411,27 @@ type Renderable interface {
 	Render(ctx context.Context, w io.Writer) error
 }
 
+type rss struct {
+	Version string  `xml:"version,attr"`
+	NSAtom  string  `xml:"xmlns:atom,attr"`
+	Channel channel `xml:"channel"`
+}
+
+func (f rss) Render(ctx context.Context, w io.Writer) error {
+	fmt.Fprintln(w, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>")
+	fmt.Fprintln(w)
+
+	enc := xml.NewEncoder(w)
+	enc.Indent("", "  ")
+	if err := enc.Encode(f); err != nil {
+		return errf("rss: render", err)
+	}
+
+	fmt.Fprintln(w)
+
+	return nil
+}
+
 type Theme interface {
 	Archive(*Blog) templ.Component
 	Index(*Blog) templ.Component
@@ -485,7 +494,7 @@ func buildPosts(ctx context.Context, b *Blog, t Theme) error {
 }
 
 func buildRSS(ctx context.Context, b *Blog) error {
-	c := blogToChannel(b)
+	c := blogToRSS(b)
 	path := filepath.Join(".", "public", "rss.xml")
 	if err := render(ctx, path, c); err != nil {
 		return errf("build rss", err)
