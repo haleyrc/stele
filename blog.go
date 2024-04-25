@@ -132,6 +132,7 @@ func blogToChannel(b *Blog) channel {
 		c.Items = append(c.Items, item{
 			Title:       p.Title,
 			Link:        fmt.Sprintf("%s/posts/%s", b.Config.BaseURL, p.Slug),
+			GUID:        fmt.Sprintf("%s/posts/%s", b.Config.BaseURL, p.Slug),
 			Description: p.Description,
 			Category:    p.Tags,
 			PubDate:     p.Timestamp.Format(time.RFC1123Z),
@@ -199,6 +200,7 @@ type image struct {
 type item struct {
 	Title       string   `xml:"title"`
 	Link        string   `xml:"link"`
+	GUID        string   `xml:"guid"`
 	Description string   `xml:"description,omitempty"`
 	Category    []string `xml:"category"`
 	PubDate     string   `xml:"pubDate"`
