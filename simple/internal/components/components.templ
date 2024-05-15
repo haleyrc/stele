@@ -34,7 +34,7 @@ templ IconRSS(size int) {
 }
 
 templ Layout(title string, b *stele.Blog) {
-	@sif.Document(fmt.Sprintf("%s - %s", title, b.Config.Name), nil, sif.Icons{}, "manifest.webmanifest") {
+	@sif.Document(fmt.Sprintf("%s - %s", title, b.Config.Name), b.Config.Description, nil, sif.Icons{}, "manifest.webmanifest") {
 		<header class="border-b py-2">
 			<div class="px-4 sm:w-3/4 mx-auto flex justify-between align-center">
 				<a class="inline-flex items-center gap-2 text-xl font-bold" href="/">

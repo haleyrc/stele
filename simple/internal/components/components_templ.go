@@ -367,7 +367,7 @@ func Layout(title string, b *stele.Blog) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = sif.Document(fmt.Sprintf("%s - %s", title, b.Config.Name), nil, sif.Icons{}, "manifest.webmanifest").Render(templ.WithChildren(ctx, templ_7745c5c3_Var14), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = sif.Document(fmt.Sprintf("%s - %s", title, b.Config.Name), b.Config.Description, nil, sif.Icons{}, "manifest.webmanifest").Render(templ.WithChildren(ctx, templ_7745c5c3_Var14), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
