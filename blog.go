@@ -18,6 +18,7 @@ import (
 	katex "github.com/FurqanSoftware/goldmark-katex"
 	"github.com/a-h/templ"
 	"github.com/yuin/goldmark"
+	emoji "github.com/yuin/goldmark-emoji"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"go.abhg.dev/goldmark/frontmatter"
@@ -278,6 +279,7 @@ type Posts []Post
 
 func LoadPosts() (Posts, error) {
 	md := goldmark.New(goldmark.WithExtensions(
+		emoji.Emoji,
 		extension.GFM,
 		&frontmatter.Extender{},
 		&katex.Extender{},
