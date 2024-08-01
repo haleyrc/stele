@@ -130,6 +130,18 @@ func indexPosts(dir string) (Posts, error) {
 	return posts, nil
 }
 
+// TODO: This isn't very efficient.
+// TODO: This will be basically broken for a new site until there is at least one post.
+func (ps Posts) First() Post {
+	var latest *Post
+	for _, p := range ps {
+		if latest == nil || p.Timestamp.Before(latest.Timestamp) {
+			latest = &p
+		}
+	}
+	return *latest
+}
+
 func errf(op string, err error) error {
 	return fmt.Errorf("%s: %w", op, err)
 }
