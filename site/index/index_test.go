@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/haleyrc/stele/index"
+	"github.com/haleyrc/stele/site/index"
 )
 
 func TestNew(t *testing.T) {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/haleyrc/stele/config"
-	"github.com/haleyrc/stele/index"
+	"github.com/haleyrc/stele/site/config"
+	"github.com/haleyrc/stele/site/index"
 )
 
 type Site struct {
