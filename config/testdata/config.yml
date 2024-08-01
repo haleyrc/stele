@@ -1,0 +1,12 @@
+name: Test
+description: This is a test blog
+author: Grace Hopper
+baseURL: https://example.com
+categories:
+  - programming
+  - music
+menu:
+  - label: About
+    path: /about
+  - label: Contact Us
+    path: /contact-us
