@@ -21,15 +21,7 @@ func TestNew(t *testing.T) {
 				Slug: "contact-us",
 			},
 		},
-		Posts: index.Posts{
-			{
-				Description: "The first post",
-				Path:        "testdata/posts/20220103-first-post.md",
-				Slug:        "first-post",
-				Tags:        []string{"go", "react"},
-				Timestamp:   timestamp("20220103"),
-				Title:       "First Post",
-			},
+		Posts: []index.Post{
 			{
 				Description: "The second post",
 				Path:        "testdata/posts/20240406-second-post.md",
@@ -37,6 +29,22 @@ func TestNew(t *testing.T) {
 				Tags:        []string{"go", "react"},
 				Timestamp:   timestamp("20240406"),
 				Title:       "Second Post",
+			},
+			{
+				Description: "The third post",
+				Path:        "testdata/posts/20240406-third-post.md",
+				Slug:        "third-post",
+				Tags:        []string{"go", "react"},
+				Timestamp:   timestamp("20240406"),
+				Title:       "Third Post",
+			},
+			{
+				Description: "The first post",
+				Path:        "testdata/posts/20220103-first-post.md",
+				Slug:        "first-post",
+				Tags:        []string{"go", "react"},
+				Timestamp:   timestamp("20220103"),
+				Title:       "First Post",
 			},
 		},
 	}

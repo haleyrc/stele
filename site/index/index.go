@@ -1,13 +1,19 @@
 // Package index provides support for parsing a directory containing blog
 // content.
+//
+// # Indexing
+//
+// TODO: Documentation file parsing rules
 package index
 
 import (
 	"bytes"
+	"cmp"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -21,9 +27,14 @@ import (
 
 type Index struct {
 	Pages []Page
-	Posts Posts
+	Posts []Post
 }
 
+// New returns an Index representing the contents of the provided directory.
+// Files are parsed according to the rules laid out in the package
+// documentation. The list of posts is guaranteed to be in descending timestamp
+// order. Two posts with identical timestamps will be ordered in ascending
+// alphanumerical order by slug.
 func New(dir string) (*Index, error) {
 	pages, err := indexPages(dir)
 	if err != nil {
@@ -71,9 +82,7 @@ type Post struct {
 	Title       string
 }
 
-type Posts []Post
-
-func indexPosts(dir string) (Posts, error) {
+func indexPosts(dir string) ([]Post, error) {
 	md := goldmark.New(goldmark.WithExtensions(
 		emoji.Emoji,
 		extension.GFM,
@@ -127,19 +136,17 @@ func indexPosts(dir string) (Posts, error) {
 		log.Printf("\t%s", file)
 	}
 
-	return posts, nil
-}
-
-// TODO: This isn't very efficient.
-// TODO: This will be basically broken for a new site until there is at least one post.
-func (ps Posts) First() Post {
-	var latest *Post
-	for _, p := range ps {
-		if latest == nil || p.Timestamp.Before(latest.Timestamp) {
-			latest = &p
+	slices.SortFunc(posts, func(a, b Post) int {
+		if a.Timestamp == b.Timestamp {
+			return cmp.Compare(a.Slug, b.Slug)
 		}
-	}
-	return *latest
+		if a.Timestamp.Before(b.Timestamp) {
+			return 1
+		}
+		return -1
+	})
+
+	return posts, nil
 }
 
 func errf(op string, err error) error {
