@@ -1,0 +1,26 @@
+package components
+
+import (
+	"fmt"
+	"github.com/haleyrc/sif/elements"
+	"github.com/haleyrc/stele/blog"
+)
+
+templ PostList(posts blog.Posts) {
+	@elements.Table() {
+		@elements.TBody() {
+			for _, post := range posts {
+				@elements.TR() {
+					@elements.TD("pr-4") {
+						{ post.Timestamp.Format("2006-01-02") }:
+					}
+					@elements.TD("") {
+						@elements.A("", "hover:underline", fmt.Sprintf("/posts/"+post.Slug)) {
+							{ post.Title }
+						}
+					}
+				}
+			}
+		}
+	}
+}

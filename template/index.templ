@@ -1,0 +1,30 @@
+package template
+
+import (
+	"github.com/haleyrc/sif/elements"
+	"github.com/haleyrc/stele/blog"
+	"github.com/haleyrc/stele/template/components"
+)
+
+type IndexViewModel struct {
+	Layout          LayoutViewModel
+	LatestPost      *blog.Post
+	MostRecentPosts blog.Posts
+}
+
+templ Index(model IndexViewModel) {
+	@Layout(model.Layout) {
+		if model.LatestPost != nil {
+			@components.Post(model.LatestPost)
+		}
+		if len(model.MostRecentPosts) > 0 {
+			@elements.HR("my-4")
+			@elements.Section() {
+				@elements.H2("text-lg font-extralight pb-2") {
+					Recent posts
+				}
+				@components.PostList(model.MostRecentPosts)
+			}
+		}
+	}
+}

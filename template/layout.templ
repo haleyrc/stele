@@ -1,0 +1,83 @@
+package template
+
+import (
+	"fmt"
+	"strconv"
+	"time"
+
+	"github.com/haleyrc/sif/components"
+	"github.com/haleyrc/sif/components/icons"
+	"github.com/haleyrc/sif/elements"
+	"github.com/haleyrc/stele/blog"
+)
+
+type LayoutViewModel struct {
+	Author      string
+	Copyright   string
+	Description string
+	Menu        []blog.MenuLink
+	Name        string
+	Title       string
+}
+
+templ Layout(model LayoutViewModel) {
+	@components.Document() {
+		@components.Head(fmt.Sprintf("%s - %s", model.Name, model.Title), model.Description) {
+			@components.Manifest("manifest.webmanifest")
+		}
+		@elements.Body() {
+			@elements.Header("border-b py-2") {
+				@elements.Div("px-4 sm:w-3/4 mx-auto flex justify-between align-center") {
+					@elements.A("", "inline-flex items-center gap-2 text-xl font-bold", "/") {
+						@icons.Home(6)
+						{ model.Title }
+					}
+					@elements.Nav("hidden sm:flex sm:items-center") {
+						for _, l := range model.Menu {
+							@elements.A("", "pl-2 hover:underline", l.Path) {
+								{ l.Label }
+							}
+						}
+						@elements.A("", "pl-2 hover:underline", "rss.xml") {
+							@icons.RSS(4)
+						}
+					}
+					@elements.A("", "flex items-center sm:hidden", "#bottom-nav") {
+						@icons.ThreeBars(6)
+					}
+				}
+			}
+			@elements.Main("py-6") {
+				@elements.Div("px-4 sm:w-3/4 mx-auto") {
+					{ children... }
+				}
+			}
+			@elements.Footer("border-t pb-2 sm:py-2") {
+				@elements.Nav("flex flex-col pb-2 sm:hidden") {
+					@elements.A("", "border-b py-2 hover:bg-gray-100 text-center", "/") {
+						home
+					}
+					for _, l := range model.Menu {
+						@elements.A("", "border-b py-2 hover:bg-gray-100 text-center", l.Path) {
+							{ l.Label }
+						}
+					}
+					@elements.A("bottom-nav", "border-b py-2 hover:bg-gray-100 text-center", "#") {
+						top
+					}
+				}
+				@elements.Div("px-4 sm:w-3/4 mx-auto flex flex-col items-center sm:flex-row justify-between") {
+					@elements.Div("font-extralight text-gray-500") {
+						© { model.Copyright }-{ strconv.Itoa(time.Now().Year()) } { model.Author }
+					}
+					@elements.Div("hidden sm:block") {
+						@elements.A("", "inline-flex items-center gap-1 hover:underline", "#") {
+							Back to top
+							@icons.ArrowUp(4)
+						}
+					}
+				}
+			}
+		}
+	}
+}

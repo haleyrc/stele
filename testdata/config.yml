@@ -1,0 +1,16 @@
+title: Taints and Tolerations
+description: A barely coherent train of thoughts
+author: Ryan Haley
+baseURL: https://blog.ryanchaley.com
+categories:
+  - blog
+  - programming
+  - dev
+  - development
+menu:
+  - label: about
+    path: /about
+  - label: archive
+    path: /archive
+  - label: tags
+    path: /tags

@@ -1,0 +1,31 @@
+package components
+
+import (
+	"fmt"
+	"github.com/haleyrc/sif/components"
+	"github.com/haleyrc/sif/elements"
+	"github.com/haleyrc/stele/blog"
+)
+
+const tagLinkStyles = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 hover:underline"
+
+templ Post(post *blog.Post) {
+	@elements.Article("text-justify") {
+		@elements.H1("text-2xl font-light") {
+			@elements.A("", "hover:underline", fmt.Sprintf("/posts/"+post.Slug)) {
+				{ post.Title }
+			}
+		}
+		@elements.Div("text-xs font-extralight pb-1") {
+			{ post.Timestamp.Format("January 2, 2006") }
+		}
+		@elements.Div("flex gap-x-2 pb-4") {
+			for _, tag := range post.Tags {
+				@elements.A("", tagLinkStyles, fmt.Sprintf("/tags/"+tag)) {
+					{ tag }
+				}
+			}
+		}
+		@components.Markdown(post.Content())
+	}
+}
