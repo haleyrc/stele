@@ -1,4 +1,4 @@
-all: clean cleanall fmt generate sourcemaps
+all: clean cleanall fmt sourcemaps
 
 .PHONY: clean cleanall fmt generate sourcemaps
 
