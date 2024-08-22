@@ -31,9 +31,7 @@ func main() {
 	}
 }
 
-func printUsage() {
-	// TODO
-}
+func printUsage() {}
 
 func runBuild(ctx context.Context, _ ...string) {
 	if err := stele.Build(ctx, ".", "dist"); err != nil {
@@ -42,9 +40,6 @@ func runBuild(ctx context.Context, _ ...string) {
 }
 
 func runDev(ctx context.Context) {
-	// TODO
-	//
-	// b.Config.BaseURL = "http://localhost:8081"
 	if err := stele.Build(ctx, ".", "build"); err != nil {
 		exitWithError(err)
 	}
