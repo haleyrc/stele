@@ -219,13 +219,7 @@ func renderManifest(ctx context.Context, dir string, cfg *blog.Config) error {
 	return m.Render(ctx, f)
 }
 
-func renderPages(
-	ctx context.Context,
-	dir string,
-	cfg *blog.Config,
-	pages blog.Pages,
-	posts blog.Posts,
-) error {
+func renderPages(ctx context.Context, dir string, cfg *blog.Config, pages blog.Pages, posts blog.Posts) error {
 	for _, page := range pages {
 		path := filepath.Join(dir, page.Slug+".html")
 
