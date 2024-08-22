@@ -35,6 +35,12 @@ func Parse(path string, w io.Writer) error {
 	return nil
 }
 
+type Frontmatter struct {
+	Description string   `yaml:"description"`
+	Tags        []string `yaml:"tags"`
+	Title       string   `yaml:"title"`
+}
+
 func ParseFrontmatter(path string) (*Frontmatter, error) {
 	ctx := parser.NewContext()
 
@@ -53,10 +59,4 @@ func ParseFrontmatter(path string) (*Frontmatter, error) {
 	}
 
 	return &fm, nil
-}
-
-type Frontmatter struct {
-	Description string   `yaml:"description"`
-	Tags        []string `yaml:"tags"`
-	Title       string   `yaml:"title"`
 }
