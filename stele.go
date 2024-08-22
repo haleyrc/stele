@@ -14,17 +14,22 @@ import (
 )
 
 func Build(ctx context.Context, srcDir, dstDir string) error {
+	start := time.Now()
+
+	log.Println("Loading configuration...")
 	cfg, err := blog.NewConfig(filepath.Join(srcDir, "config.yml"))
 	if err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 
+	log.Println("Indexing posts...")
 	posts, err := blog.NewPosts(filepath.Join(srcDir, "posts"))
 	if err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 	log.Printf("Found %d posts.", len(posts))
 
+	log.Println("Indexing pages...")
 	pages, err := blog.NewPages(filepath.Join(srcDir, "pages"))
 	if err != nil {
 		return fmt.Errorf("stele: build: %w", err)
@@ -62,6 +67,8 @@ func Build(ctx context.Context, srcDir, dstDir string) error {
 	if err := renderRSS(ctx, dstDir, cfg, posts); err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
+
+	log.Printf("Took %s.", time.Since(start))
 
 	return nil
 }
