@@ -60,9 +60,7 @@ func runDev(ctx context.Context) {
 		switch r.URL.Path {
 		case "/":
 			fn = "index.html"
-		case "/rss.xml":
-			fn = r.URL.Path
-		case "/manifest.webmanifest":
+		case "/rss.xml", "/manifest.webmanifest":
 			fn = r.URL.Path
 		default:
 			fn = r.URL.Path + ".html"
