@@ -28,7 +28,7 @@ func Parse(path string, w io.Writer) error {
 		return fmt.Errorf("markdown: parse: %w", err)
 	}
 
-	if err := defaultParser.Convert(contents, io.Discard); err != nil {
+	if err := defaultParser.Convert(contents, w); err != nil {
 		return fmt.Errorf("markdown: parse: %w", err)
 	}
 
