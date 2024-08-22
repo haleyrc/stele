@@ -4,20 +4,13 @@ import (
 	"bytes"
 	"cmp"
 	"fmt"
-	"os"
 	"path/filepath"
 	"slices"
 	"strconv"
 	"strings"
 	"time"
 
-	katex "github.com/FurqanSoftware/goldmark-katex"
 	"github.com/haleyrc/stele/internal/markdown"
-	"github.com/yuin/goldmark"
-	emoji "github.com/yuin/goldmark-emoji"
-	"github.com/yuin/goldmark/extension"
-	"github.com/yuin/goldmark/parser"
-	"go.abhg.dev/goldmark/frontmatter"
 )
 
 type Post struct {
@@ -30,7 +23,7 @@ type Post struct {
 }
 
 func NewPost(path string) (*Post, error) {
-	meta, err := markdown.Parse(path)
+	meta, err := markdown.ParseFrontmatter(path)
 	if err != nil {
 		return nil, fmt.Errorf("blog: new post: %w", err)
 	}
@@ -156,25 +149,10 @@ func (ps Posts) ByYear() PostIndex {
 }
 
 func (p *Post) Content() string {
-	md := goldmark.New(goldmark.WithExtensions(
-		emoji.Emoji,
-		extension.GFM,
-		&frontmatter.Extender{},
-		&katex.Extender{},
-	))
-
-	ctx := parser.NewContext()
-
-	contents, err := os.ReadFile(p.Path)
-	if err != nil {
-		panic(fmt.Errorf("blog: post: content: %w", err))
-	}
-
 	var buff bytes.Buffer
-	if err := md.Convert(contents, &buff, parser.WithContext(ctx)); err != nil {
+	if err := markdown.Parse(p.Path, &buff); err != nil {
 		panic(fmt.Errorf("blog: post: content: %w", err))
 	}
-
 	return buff.String()
 }
 
