@@ -7,9 +7,9 @@ import (
 )
 
 type IndexViewModel struct {
-	Layout          LayoutViewModel
-	LatestPost      *blog.Post
-	MostRecentPosts blog.Posts
+	Layout      LayoutViewModel
+	LatestPost  *blog.Post
+	RecentPosts blog.Posts
 }
 
 templ Index(model IndexViewModel) {
@@ -17,13 +17,13 @@ templ Index(model IndexViewModel) {
 		if model.LatestPost != nil {
 			@components.Post(model.LatestPost)
 		}
-		if len(model.MostRecentPosts) > 0 {
+		if len(model.RecentPosts) > 0 {
 			@elements.HR("my-4")
 			@elements.Section() {
 				@elements.H2("text-lg font-extralight pb-2") {
 					Recent posts
 				}
-				@components.PostList(model.MostRecentPosts)
+				@components.PostList(model.RecentPosts)
 			}
 		}
 	}

@@ -89,11 +89,14 @@ func (ps Posts) First() *Post {
 	return &ps[len(ps)-1]
 }
 
-func (ps Posts) Last() *Post {
+func (ps Posts) Head() (*Post, Posts) {
 	if len(ps) == 0 {
-		return nil
+		return nil, nil
 	}
-	return &ps[0]
+	if len(ps) == 1 {
+		return &ps[0], nil
+	}
+	return &ps[0], ps[1:]
 }
 
 func (ps Posts) MostRecent(n int) Posts {

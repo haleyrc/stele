@@ -15,9 +15,9 @@ import (
 )
 
 type IndexViewModel struct {
-	Layout          LayoutViewModel
-	LatestPost      *blog.Post
-	MostRecentPosts blog.Posts
+	Layout      LayoutViewModel
+	LatestPost  *blog.Post
+	RecentPosts blog.Posts
 }
 
 func Index(model IndexViewModel) templ.Component {
@@ -60,7 +60,7 @@ func Index(model IndexViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if len(model.MostRecentPosts) > 0 {
+			if len(model.RecentPosts) > 0 {
 				templ_7745c5c3_Err = elements.HR("my-4").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -107,7 +107,7 @@ func Index(model IndexViewModel) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = components.PostList(model.MostRecentPosts).Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = components.PostList(model.RecentPosts).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

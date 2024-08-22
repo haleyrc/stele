@@ -174,6 +174,9 @@ func renderIndex(ctx context.Context, dir string, cfg *blog.Config, posts blog.P
 	}
 	defer f.Close()
 
+	latestPost, rest := posts.Head()
+	recentPosts := rest.MostRecent(10)
+
 	copyright := time.Now().Year()
 	if first := posts.First(); first != nil {
 		copyright = first.Timestamp.Year()
@@ -188,8 +191,8 @@ func renderIndex(ctx context.Context, dir string, cfg *blog.Config, posts blog.P
 			Name:        "Home Page",
 			Title:       cfg.Title,
 		},
-		LatestPost:      posts.Last(),
-		MostRecentPosts: posts.MostRecent(10),
+		LatestPost:  latestPost,
+		RecentPosts: recentPosts,
 	}
 
 	log.Printf("Rendering %s...", path)
