@@ -4,4 +4,4 @@ on: [push]
 
 jobs:
   test:
-    uses: haleyrc/actions/.github/workflows/go/test.yml@main
+    uses: haleyrc/actions/.github/workflows/go-test.yml@main
