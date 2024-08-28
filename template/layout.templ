@@ -2,13 +2,10 @@ package template
 
 import (
 	"fmt"
+	"github.com/haleyrc/stele/blog"
+	"github.com/haleyrc/stele/template/components/icons"
 	"strconv"
 	"time"
-
-	"github.com/haleyrc/sif/components"
-	"github.com/haleyrc/sif/components/icons"
-	"github.com/haleyrc/sif/elements"
-	"github.com/haleyrc/stele/blog"
 )
 
 type LayoutViewModel struct {
@@ -21,81 +18,114 @@ type LayoutViewModel struct {
 }
 
 templ footer(copyright, author string, menu []blog.MenuLink) {
-	@elements.Footer("border-t pb-2 sm:py-2") {
-		@elements.Nav("flex flex-col pb-2 sm:hidden") {
-			@elements.A("", "border-b py-2 hover:bg-gray-100 text-center", "/") {
+	<footer class="border-t pb-2 sm:py-2">
+		<nav class="flex flex-col pb-2 sm:hidden">
+			<a class="border-b py-2 hover:bg-gray-100 text-center" href={ templ.URL("/") }>
 				home
-			}
+			</a>
 			for _, l := range menu {
-				@elements.A("", "border-b py-2 hover:bg-gray-100 text-center", l.Path) {
+				<a class="border-b py-2 hover:bg-gray-100 text-center" href={ templ.URL(l.Path) }>
 					{ l.Label }
-				}
+				</a>
 			}
-			@elements.A("bottom-nav", "border-b py-2 hover:bg-gray-100 text-center", "#") {
+			<a id="bottom-nav" class="border-b py-2 hover:bg-gray-100 text-center" href={ templ.URL("#") }>
 				top
-			}
-		}
-		@elements.Div("px-4 sm:w-3/4 mx-auto flex flex-col items-center sm:flex-row justify-between") {
-			@elements.Div("font-extralight text-gray-500") {
+			</a>
+		</nav>
+		<div class="px-4 sm:w-3/4 mx-auto flex flex-col items-center sm:flex-row justify-between">
+			<div class="font-extralight text-gray-500">
 				© { copyright }-{ strconv.Itoa(time.Now().Year()) } { author }
-			}
-			@elements.Div("hidden sm:block") {
-				@elements.A("", "inline-flex items-center gap-1 hover:underline", "#") {
+			</div>
+			<div class="hidden sm:block">
+				<a class="inline-flex items-center gap-1 hover:underline" href={ templ.URL("#") }>
 					Back to top
 					@icons.ArrowUp(4)
-				}
-			}
-		}
-	}
+				</a>
+			</div>
+		</div>
+	</footer>
 }
 
 templ head(name, title, description string) {
-	@components.Head(fmt.Sprintf("%s - %s", name, title), description) {
-		@components.Manifest("manifest.webmanifest")
-	}
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="description" content={ description }/>
+		<title>{ fmt.Sprintf("%s - %s", name, title) }</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<style type="text/tailwindcss">
+			@layer utilities {
+				.markdown p {
+					@apply mb-2
+				}
+
+				.markdown pre {
+					@apply rounded border p-2 text-sm overflow-x-scroll mb-2
+				}
+
+				.markdown h1 {
+					@apply text-lg font-semibold border-b-4 border-dotted mb-2
+				}
+
+				.markdown h2 {
+					@apply text-lg font-light border-b border-dashed my-2
+				}
+
+				.markdown ol {
+					@apply list-decimal list-inside
+				}
+
+				.markdown a {
+					@apply hover:underline text-blue-500
+				}
+			}
+		</style>
+		<link rel="manifest" href={ "manifest.webmanifest" }/>
+	</head>
 }
 
 templ header(title string, menu []blog.MenuLink) {
-	@elements.Header("border-b py-2") {
-		@elements.Div("px-4 sm:w-3/4 mx-auto flex justify-between align-center") {
-			@elements.A("", "inline-flex items-center gap-2 text-xl font-bold", "/") {
+	<header class="border-b py-2">
+		<div class="px-4 sm:w-3/4 mx-auto flex justify-between align-center">
+			<a class="inline-flex items-center gap-2 text-xl font-bold" href={ templ.URL("/") }>
 				@icons.Home(6)
 				{ title }
-			}
-			@elements.Nav("hidden sm:flex sm:items-center") {
+			</a>
+			<nav class="hidden sm:flex sm:items-center">
 				for _, l := range menu {
-					@elements.A("", "pl-2 hover:underline", l.Path) {
+					<a class="pl-2 hover:underline" href={ templ.URL(l.Path) }>
 						{ l.Label }
-					}
+					</a>
 				}
-				@elements.A("", "pl-2 hover:underline", "rss.xml") {
+				<a class="pl-2 hover:underline" href={ templ.URL("rss.xml") }>
 					@icons.RSS(4)
-				}
-			}
-			@elements.A("", "flex items-center sm:hidden", "#bottom-nav") {
+				</a>
+			</nav>
+			<a class="flex items-center sm:hidden" href={ templ.URL("#bottom-nav") }>
 				@icons.ThreeBars(6)
-			}
-		}
-	}
+			</a>
+		</div>
+	</header>
 }
 
 templ Layout(model LayoutViewModel) {
-	@components.Document() {
+	<!DOCTYPE html>
+	<html lang="en-US">
 		@head(model.Name, model.Title, model.Description)
-		@elements.Body() {
+		<body>
 			@header(model.Title, model.Menu)
 			@main() {
 				{ children... }
 			}
 			@footer(model.Copyright, model.Author, model.Menu)
-		}
-	}
+		</body>
+	</html>
 }
 
 templ main() {
-	@elements.Main("py-6") {
-		@elements.Div("px-4 sm:w-3/4 mx-auto") {
+	<main class="py-6">
+		<div class="px-4 sm:w-3/4 mx-auto">
 			{ children... }
-		}
-	}
+		</div>
+	</main>
 }

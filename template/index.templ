@@ -1,7 +1,6 @@
 package template
 
 import (
-	"github.com/haleyrc/sif/elements"
 	"github.com/haleyrc/stele/blog"
 	"github.com/haleyrc/stele/template/components"
 )
@@ -18,13 +17,13 @@ templ Index(model IndexViewModel) {
 			@components.Post(model.LatestPost)
 		}
 		if len(model.RecentPosts) > 0 {
-			@elements.HR("my-4")
-			@elements.Section() {
-				@elements.H2("text-lg font-extralight pb-2") {
+			<hr class="my-4"/>
+			<section>
+				<h2 class="text-lg font-extralight pb-2">
 					Recent posts
-				}
+				</h2>
 				@components.PostList(model.RecentPosts)
-			}
+			</section>
 		}
 	}
 }

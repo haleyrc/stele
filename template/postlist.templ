@@ -1,7 +1,6 @@
 package template
 
 import (
-	"github.com/haleyrc/sif/elements"
 	"github.com/haleyrc/stele/blog"
 	"github.com/haleyrc/stele/template/components"
 )
@@ -14,9 +13,9 @@ type PostListViewModel struct {
 
 templ PostList(model PostListViewModel) {
 	@Layout(model.Layout) {
-		@elements.H1("text-xl font-bold pb-2") {
+		<h1 class="text-xl font-bold pb-2">
 			{ model.Heading }
-		}
+		</h1>
 		@components.PostList(model.Posts)
 	}
 }

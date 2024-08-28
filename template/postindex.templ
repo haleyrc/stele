@@ -2,7 +2,6 @@ package template
 
 import (
 	"fmt"
-	"github.com/haleyrc/sif/elements"
 	"github.com/haleyrc/stele/blog"
 )
 
@@ -14,14 +13,19 @@ type PostIndexViewModel struct {
 
 templ PostIndex(model PostIndexViewModel) {
 	@Layout(model.Layout) {
-		@elements.UL() {
+		<ul>
 			for _, entry := range model.Index {
-				@elements.LI() {
-					@elements.A("", "hover:underline", fmt.Sprintf(model.Prefix+entry.Key)) {
+				<li>
+					<a class="hover:underline" href={ urlf(model.Prefix + entry.Key) }>
 						{ entry.Key } ({ fmt.Sprintf("%d", len(entry.Posts)) })
-					}
-				}
+					</a>
+				</li>
 			}
-		}
+		</ul>
 	}
+}
+
+func urlf(format string, args ...any) templ.SafeURL {
+	s := fmt.Sprintf(format, args...)
+	return templ.URL(s)
 }

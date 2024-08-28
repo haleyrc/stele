@@ -2,29 +2,33 @@ package components
 
 import (
 	"fmt"
-	"github.com/haleyrc/sif/elements"
 	"github.com/haleyrc/stele/blog"
 )
 
 templ PostList(posts blog.Posts) {
-	@elements.Table() {
-		@elements.TBody() {
+	<table>
+		<tbody>
 			for _, post := range posts {
 				@postListEntry(post)
 			}
-		}
-	}
+		</tbody>
+	</table>
 }
 
 templ postListEntry(p blog.Post) {
-	@elements.TR() {
-		@elements.TD("pr-4") {
+	<tr>
+		<td class="pr-4">
 			{ p.Timestamp.Format("2006-01-02") }:
-		}
-		@elements.TD("") {
-			@elements.A("", "hover:underline", fmt.Sprintf("/posts/"+p.Slug)) {
+		</td>
+		<td>
+			<a class="hover:underline" href={ urlf("/posts/" + p.Slug) }>
 				{ p.Title }
-			}
-		}
-	}
+			</a>
+		</td>
+	</tr>
+}
+
+func urlf(format string, args ...any) templ.SafeURL {
+	s := fmt.Sprintf(format, args...)
+	return templ.URL(s)
 }
