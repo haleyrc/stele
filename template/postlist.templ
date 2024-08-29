@@ -3,13 +3,12 @@ package template
 import "github.com/haleyrc/stele/template/components"
 
 type PostListProps struct {
-	Layout  LayoutProps
 	Heading string
 	Posts   components.PostListProps
 }
 
-templ PostList(props PostListProps) {
-	@Layout(props.Layout) {
+templ (l Layout) PostList(props PostListProps) {
+	@l.Layout(props.Heading) {
 		<h1 class="text-xl font-bold pb-2">
 			{ props.Heading }
 		</h1>

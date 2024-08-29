@@ -39,23 +39,35 @@ func Build(ctx context.Context, srcDir, dstDir string) error {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 
-	if err := renderIndex(ctx, dstDir, cfg, posts); err != nil {
+	copyright := time.Now().Year()
+	if first := posts.First(); first != nil {
+		copyright = first.Timestamp.Year()
+	}
+	layout := template.Layout{
+		Author:      cfg.Author,
+		Copyright:   strconv.Itoa(copyright),
+		Description: cfg.Description,
+		Menu:        menuLinksToProps(cfg.Menu),
+		Title:       cfg.Title,
+	}
+
+	if err := renderIndex(ctx, dstDir, layout, posts); err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 
-	if err := renderPages(ctx, dstDir, cfg, pages, posts); err != nil {
+	if err := renderPages(ctx, dstDir, layout, pages); err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 
-	if err := renderPosts(ctx, dstDir, cfg, posts); err != nil {
+	if err := renderPosts(ctx, dstDir, layout, posts); err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 
-	if err := renderArchive(ctx, dstDir, cfg, posts); err != nil {
+	if err := renderArchive(ctx, dstDir, layout, posts); err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 
-	if err := renderTags(ctx, dstDir, cfg, posts); err != nil {
+	if err := renderTags(ctx, dstDir, layout, posts); err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 
@@ -96,7 +108,7 @@ func createOutputDirectory(dir string) error {
 	return nil
 }
 
-func renderArchive(ctx context.Context, dir string, cfg *Config, posts Posts) error {
+func renderArchive(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
 	path := filepath.Join(dir, "archive.html")
 
 	f, err := os.Create(path)
@@ -106,26 +118,14 @@ func renderArchive(ctx context.Context, dir string, cfg *Config, posts Posts) er
 	defer f.Close()
 
 	postsByYear := posts.ByYear()
-	copyright := time.Now().Year()
-	if first := posts.First(); first != nil {
-		copyright = first.Timestamp.Year()
-	}
-
 	vm := template.PostIndexProps{
-		Layout: template.LayoutProps{
-			Author:      cfg.Author,
-			Copyright:   strconv.Itoa(copyright),
-			Description: cfg.Description,
-			Menu:        menuLinksToProps(cfg.Menu),
-			Name:        "Archive",
-			Title:       cfg.Title,
-		},
-		Entries: postIndexToProps(postsByYear),
-		Prefix:  "/archive/",
+		PageName: "Archive",
+		Entries:  postIndexToProps(postsByYear),
+		Prefix:   "/archive/",
 	}
 
 	log.Printf("Rendering %s...", path)
-	if err := template.PostIndex(vm).Render(ctx, f); err != nil {
+	if err := layout.PostIndex(vm).Render(ctx, f); err != nil {
 		return fmt.Errorf("render archive: %w", err)
 	}
 
@@ -137,26 +137,13 @@ func renderArchive(ctx context.Context, dir string, cfg *Config, posts Posts) er
 			return fmt.Errorf("render archive: %w", err)
 		}
 
-		copyright := time.Now().Year()
-		if first := posts.First(); first != nil {
-			copyright = first.Timestamp.Year()
-		}
-
 		vm := template.PostListProps{
-			Layout: template.LayoutProps{
-				Author:      cfg.Author,
-				Copyright:   strconv.Itoa(copyright),
-				Description: cfg.Description,
-				Menu:        menuLinksToProps(cfg.Menu),
-				Name:        fmt.Sprintf("Posts from %s", entry.Key),
-				Title:       cfg.Title,
-			},
 			Heading: fmt.Sprintf("Posts from %s", entry.Key),
 			Posts:   postsToProps(entry.Posts),
 		}
 
 		log.Printf("Rendering %s...", path)
-		if err := template.PostList(vm).Render(ctx, f); err != nil {
+		if err := layout.PostList(vm).Render(ctx, f); err != nil {
 			return fmt.Errorf("render archive: %w", err)
 		}
 	}
@@ -164,7 +151,7 @@ func renderArchive(ctx context.Context, dir string, cfg *Config, posts Posts) er
 	return nil
 }
 
-func renderIndex(ctx context.Context, dir string, cfg *Config, posts Posts) error {
+func renderIndex(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
 	path := filepath.Join(dir, "index.html")
 
 	f, err := os.Create(path)
@@ -176,30 +163,16 @@ func renderIndex(ctx context.Context, dir string, cfg *Config, posts Posts) erro
 	latestPost, rest := posts.Head()
 	recentPosts := rest.MostRecent(10)
 
-	copyright := time.Now().Year()
-	if first := posts.First(); first != nil {
-		copyright = first.Timestamp.Year()
-	}
-
 	vm := template.IndexProps{
-		Layout: template.LayoutProps{
-			Author:      cfg.Author,
-			Copyright:   strconv.Itoa(copyright),
-			Description: cfg.Description,
-			Menu:        menuLinksToProps(cfg.Menu),
-			Name:        "Home Page",
-			Title:       cfg.Title,
-		},
 		RecentPosts: postsToProps(recentPosts),
 	}
-
 	if latestPost != nil {
 		postProps := postToProps(*latestPost)
 		vm.LatestPost = &postProps
 	}
 
 	log.Printf("Rendering %s...", path)
-	if err := template.Index(vm).Render(ctx, f); err != nil {
+	if err := layout.Index(vm).Render(ctx, f); err != nil {
 		return fmt.Errorf("render index: %w", err)
 	}
 
@@ -225,7 +198,7 @@ func renderManifest(ctx context.Context, dir string, cfg *Config) error {
 	return m.Render(ctx, f)
 }
 
-func renderPages(ctx context.Context, dir string, cfg *Config, pages Pages, posts Posts) error {
+func renderPages(ctx context.Context, dir string, layout template.Layout, pages Pages) error {
 	for _, page := range pages {
 		path := filepath.Join(dir, page.Slug+".html")
 
@@ -235,25 +208,13 @@ func renderPages(ctx context.Context, dir string, cfg *Config, pages Pages, post
 		}
 		defer f.Close()
 
-		copyright := time.Now().Year()
-		if first := posts.First(); first != nil {
-			copyright = first.Timestamp.Year()
-		}
-
 		vm := template.PageProps{
-			Layout: template.LayoutProps{
-				Author:      cfg.Author,
-				Copyright:   strconv.Itoa(copyright),
-				Description: cfg.Description,
-				Menu:        menuLinksToProps(cfg.Menu),
-				Name:        page.Slug,
-				Title:       cfg.Title,
-			},
 			Content: page.Content(),
+			Slug:    page.Slug,
 		}
 
 		log.Printf("Rendering %s...", path)
-		if err := template.Page(vm).Render(ctx, f); err != nil {
+		if err := layout.Page(vm).Render(ctx, f); err != nil {
 			return fmt.Errorf("render pages: %w", err)
 		}
 	}
@@ -261,7 +222,7 @@ func renderPages(ctx context.Context, dir string, cfg *Config, pages Pages, post
 	return nil
 }
 
-func renderPosts(ctx context.Context, dir string, cfg *Config, posts Posts) error {
+func renderPosts(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
 	for _, post := range posts {
 		path := filepath.Join(dir, "posts", post.Slug+".html")
 
@@ -271,25 +232,12 @@ func renderPosts(ctx context.Context, dir string, cfg *Config, posts Posts) erro
 		}
 		defer f.Close()
 
-		copyright := time.Now().Year()
-		if first := posts.First(); first != nil {
-			copyright = first.Timestamp.Year()
-		}
-
 		vm := template.PostProps{
-			Layout: template.LayoutProps{
-				Author:      cfg.Author,
-				Copyright:   strconv.Itoa(copyright),
-				Description: cfg.Description,
-				Menu:        menuLinksToProps(cfg.Menu),
-				Name:        post.Title,
-				Title:       cfg.Title,
-			},
 			Post: postToProps(post),
 		}
 
 		log.Printf("Rendering %s...", path)
-		if err := template.Post(vm).Render(ctx, f); err != nil {
+		if err := layout.Post(vm).Render(ctx, f); err != nil {
 			return fmt.Errorf("render posts: %w", err)
 		}
 	}
@@ -316,7 +264,7 @@ func renderRSS(ctx context.Context, dir string, cfg *Config, posts Posts) error 
 	return feed.Render(ctx, f)
 }
 
-func renderTags(ctx context.Context, dir string, cfg *Config, posts Posts) error {
+func renderTags(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
 	path := filepath.Join(dir, "tags.html")
 
 	f, err := os.Create(path)
@@ -326,26 +274,14 @@ func renderTags(ctx context.Context, dir string, cfg *Config, posts Posts) error
 	defer f.Close()
 
 	postsByTag := posts.ByTag()
-	copyright := time.Now().Year()
-	if first := posts.First(); first != nil {
-		copyright = first.Timestamp.Year()
-	}
-
 	vm := template.PostIndexProps{
-		Layout: template.LayoutProps{
-			Author:      cfg.Author,
-			Copyright:   strconv.Itoa(copyright),
-			Description: cfg.Description,
-			Menu:        menuLinksToProps(cfg.Menu),
-			Name:        "Tags",
-			Title:       cfg.Title,
-		},
-		Entries: postIndexToProps(postsByTag),
-		Prefix:  "/tags/",
+		PageName: "Tags",
+		Entries:  postIndexToProps(postsByTag),
+		Prefix:   "/tags/",
 	}
 
 	log.Printf("Rendering %s...", path)
-	if err := template.PostIndex(vm).Render(ctx, f); err != nil {
+	if err := layout.PostIndex(vm).Render(ctx, f); err != nil {
 		return fmt.Errorf("render tags: %w", err)
 	}
 
@@ -357,26 +293,13 @@ func renderTags(ctx context.Context, dir string, cfg *Config, posts Posts) error
 			return fmt.Errorf("render tags: %w", err)
 		}
 
-		copyright := time.Now().Year()
-		if first := posts.First(); first != nil {
-			copyright = first.Timestamp.Year()
-		}
-
 		vm := template.PostListProps{
-			Layout: template.LayoutProps{
-				Author:      cfg.Author,
-				Copyright:   strconv.Itoa(copyright),
-				Description: cfg.Description,
-				Menu:        menuLinksToProps(cfg.Menu),
-				Name:        fmt.Sprintf("Posts tagged %q", entry.Key),
-				Title:       cfg.Title,
-			},
 			Heading: fmt.Sprintf("Posts tagged %q", entry.Key),
 			Posts:   postsToProps(entry.Posts),
 		}
 
 		log.Printf("Rendering %s...", path)
-		if err := template.PostList(vm).Render(ctx, f); err != nil {
+		if err := layout.PostList(vm).Render(ctx, f); err != nil {
 			return fmt.Errorf("render tags: %w", err)
 		}
 	}

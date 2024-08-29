@@ -7,12 +7,11 @@ import (
 	"time"
 )
 
-type LayoutProps struct {
+type Layout struct {
 	Author      string
 	Copyright   string
 	Description string
 	Menu        []MenuLink
-	Name        string
 	Title       string
 }
 
@@ -112,16 +111,16 @@ templ header(title string, menu []MenuLink) {
 	</header>
 }
 
-templ Layout(props LayoutProps) {
+templ (l Layout) Layout(pageName string) {
 	<!DOCTYPE html>
 	<html lang="en-US">
-		@head(props.Name, props.Title, props.Description)
+		@head(pageName, l.Title, l.Description)
 		<body>
-			@header(props.Title, props.Menu)
+			@header(l.Title, l.Menu)
 			@main() {
 				{ children... }
 			}
-			@footer(props.Copyright, props.Author, props.Menu)
+			@footer(l.Copyright, l.Author, l.Menu)
 		</body>
 	</html>
 }

@@ -15,12 +15,11 @@ import (
 	"time"
 )
 
-type LayoutProps struct {
+type Layout struct {
 	Author      string
 	Copyright   string
 	Description string
 	Menu        []MenuLink
-	Name        string
 	Title       string
 }
 
@@ -77,7 +76,7 @@ func footer(copyright, author string, menu []MenuLink) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(l.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 32, Col: 14}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 31, Col: 14}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -104,7 +103,7 @@ func footer(copyright, author string, menu []MenuLink) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(copyright)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 41, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 40, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -117,7 +116,7 @@ func footer(copyright, author string, menu []MenuLink) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(time.Now().Year()))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 41, Col: 54}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 40, Col: 54}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -130,7 +129,7 @@ func footer(copyright, author string, menu []MenuLink) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(author)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 41, Col: 65}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 40, Col: 65}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -186,7 +185,7 @@ func head(name, title, description string) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 57, Col: 48}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 56, Col: 48}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -199,7 +198,7 @@ func head(name, title, description string) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%s - %s", name, title))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 58, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 57, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -212,7 +211,7 @@ func head(name, title, description string) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs("manifest.webmanifest")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 87, Col: 52}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 86, Col: 52}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -264,7 +263,7 @@ func header(title string, menu []MenuLink) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 96, Col: 11}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 95, Col: 11}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -291,7 +290,7 @@ func header(title string, menu []MenuLink) templ.Component {
 			var templ_7745c5c3_Var18 string
 			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(l.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 101, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 100, Col: 15}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 			if templ_7745c5c3_Err != nil {
@@ -344,7 +343,7 @@ func header(title string, menu []MenuLink) templ.Component {
 	})
 }
 
-func Layout(props LayoutProps) templ.Component {
+func (l Layout) Layout(pageName string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -366,7 +365,7 @@ func Layout(props LayoutProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = head(props.Name, props.Title, props.Description).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = head(pageName, l.Title, l.Description).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -374,7 +373,7 @@ func Layout(props LayoutProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = header(props.Title, props.Menu).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = header(l.Title, l.Menu).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -400,7 +399,7 @@ func Layout(props LayoutProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = footer(props.Copyright, props.Author, props.Menu).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = footer(l.Copyright, l.Author, l.Menu).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

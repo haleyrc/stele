@@ -6,9 +6,9 @@ import (
 )
 
 type PostIndexProps struct {
-	Layout  LayoutProps
-	Entries []PostIndexEntryProps
-	Prefix  string
+	PageName string
+	Entries  []PostIndexEntryProps
+	Prefix   string
 }
 
 type PostIndexEntryProps struct {
@@ -16,8 +16,8 @@ type PostIndexEntryProps struct {
 	Key   string
 }
 
-templ PostIndex(props PostIndexProps) {
-	@Layout(props.Layout) {
+templ (l Layout) PostIndex(props PostIndexProps) {
+	@l.Layout(props.PageName) {
 		<ul>
 			for _, entry := range props.Entries {
 				<li>

@@ -3,12 +3,11 @@ package template
 import "github.com/haleyrc/stele/template/components"
 
 type PostProps struct {
-	Layout LayoutProps
-	Post   components.PostProps
+	Post components.PostProps
 }
 
-templ Post(props PostProps) {
-	@Layout(props.Layout) {
+templ (l Layout) Post(props PostProps) {
+	@l.Layout(props.Post.Title) {
 		@components.Post(props.Post)
 	}
 }

@@ -3,13 +3,12 @@ package template
 import "github.com/haleyrc/stele/template/components"
 
 type IndexProps struct {
-	Layout      LayoutProps
 	LatestPost  *components.PostProps
 	RecentPosts components.PostListProps
 }
 
-templ Index(props IndexProps) {
-	@Layout(props.Layout) {
+templ (l Layout) Index(props IndexProps) {
+	@l.Layout("Home Page") {
 		if props.LatestPost != nil {
 			@components.Post(*props.LatestPost)
 		}

@@ -1,12 +1,12 @@
 package template
 
 type PageProps struct {
-	Layout  LayoutProps
 	Content string
+	Slug    string
 }
 
-templ Page(props PageProps) {
-	@Layout(props.Layout) {
+templ (l Layout) Page(props PageProps) {
+	@l.Layout(props.Slug) {
 		@templ.Raw(props.Content)
 	}
 }
