@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/a-h/templ"
+
 	"github.com/haleyrc/stele/template"
 )
 
@@ -110,40 +112,27 @@ func createOutputDirectory(dir string) error {
 
 func renderArchive(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
 	path := filepath.Join(dir, "archive.html")
-
-	f, err := os.Create(path)
-	if err != nil {
-		return fmt.Errorf("render archive: %w", err)
-	}
-	defer f.Close()
-
 	postsByYear := posts.ByYear()
+
 	props := template.PostIndexProps{
 		PageName: "Archive",
 		Entries:  postIndexToProps(postsByYear),
 		Prefix:   "/archive/",
 	}
 
-	log.Printf("Rendering %s...", path)
-	if err := layout.PostIndex(props).Render(ctx, f); err != nil {
+	if err := renderToPath(ctx, path, layout.PostIndex(props)); err != nil {
 		return fmt.Errorf("render archive: %w", err)
 	}
 
 	for _, entry := range postsByYear {
 		path := filepath.Join(dir, "archive", entry.Key+".html")
 
-		f, err := os.Create(path)
-		if err != nil {
-			return fmt.Errorf("render archive: %w", err)
-		}
-
 		props := template.PostListProps{
 			Heading: fmt.Sprintf("Posts from %s", entry.Key),
 			Posts:   postsToProps(entry.Posts),
 		}
 
-		log.Printf("Rendering %s...", path)
-		if err := layout.PostList(props).Render(ctx, f); err != nil {
+		if err := renderToPath(ctx, path, layout.PostList(props)); err != nil {
 			return fmt.Errorf("render archive: %w", err)
 		}
 	}
@@ -153,12 +142,6 @@ func renderArchive(ctx context.Context, dir string, layout template.Layout, post
 
 func renderIndex(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
 	path := filepath.Join(dir, "index.html")
-
-	f, err := os.Create(path)
-	if err != nil {
-		return fmt.Errorf("render index: %w", err)
-	}
-	defer f.Close()
 
 	latestPost, rest := posts.Head()
 	recentPosts := rest.MostRecent(10)
@@ -171,8 +154,7 @@ func renderIndex(ctx context.Context, dir string, layout template.Layout, posts 
 		props.LatestPost = &postProps
 	}
 
-	log.Printf("Rendering %s...", path)
-	if err := layout.Index(props).Render(ctx, f); err != nil {
+	if err := renderToPath(ctx, path, layout.Index(props)); err != nil {
 		return fmt.Errorf("render index: %w", err)
 	}
 
@@ -202,19 +184,12 @@ func renderPages(ctx context.Context, dir string, layout template.Layout, pages 
 	for _, page := range pages {
 		path := filepath.Join(dir, page.Slug+".html")
 
-		f, err := os.Create(path)
-		if err != nil {
-			return fmt.Errorf("render pages: %w", err)
-		}
-		defer f.Close()
-
 		props := template.PageProps{
 			Content: page.Content(),
 			Slug:    page.Slug,
 		}
 
-		log.Printf("Rendering %s...", path)
-		if err := layout.Page(props).Render(ctx, f); err != nil {
+		if err := renderToPath(ctx, path, layout.Page(props)); err != nil {
 			return fmt.Errorf("render pages: %w", err)
 		}
 	}
@@ -226,18 +201,11 @@ func renderPosts(ctx context.Context, dir string, layout template.Layout, posts 
 	for _, post := range posts {
 		path := filepath.Join(dir, "posts", post.Slug+".html")
 
-		f, err := os.Create(path)
-		if err != nil {
-			return fmt.Errorf("render posts: %w", err)
-		}
-		defer f.Close()
-
 		props := template.PostProps{
 			Post: postToProps(post),
 		}
 
-		log.Printf("Rendering %s...", path)
-		if err := layout.Post(props).Render(ctx, f); err != nil {
+		if err := renderToPath(ctx, path, layout.Post(props)); err != nil {
 			return fmt.Errorf("render posts: %w", err)
 		}
 	}
@@ -266,43 +234,40 @@ func renderRSS(ctx context.Context, dir string, cfg *Config, posts Posts) error 
 
 func renderTags(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
 	path := filepath.Join(dir, "tags.html")
-
-	f, err := os.Create(path)
-	if err != nil {
-		return fmt.Errorf("render tags: %w", err)
-	}
-	defer f.Close()
-
 	postsByTag := posts.ByTag()
+
 	props := template.PostIndexProps{
 		PageName: "Tags",
 		Entries:  postIndexToProps(postsByTag),
 		Prefix:   "/tags/",
 	}
 
-	log.Printf("Rendering %s...", path)
-	if err := layout.PostIndex(props).Render(ctx, f); err != nil {
+	if err := renderToPath(ctx, path, layout.PostIndex(props)); err != nil {
 		return fmt.Errorf("render tags: %w", err)
 	}
 
 	for _, entry := range postsByTag {
 		path := filepath.Join(dir, "tags", entry.Key+".html")
 
-		f, err := os.Create(path)
-		if err != nil {
-			return fmt.Errorf("render tags: %w", err)
-		}
-
 		props := template.PostListProps{
 			Heading: fmt.Sprintf("Posts tagged %q", entry.Key),
 			Posts:   postsToProps(entry.Posts),
 		}
 
-		log.Printf("Rendering %s...", path)
-		if err := layout.PostList(props).Render(ctx, f); err != nil {
+		if err := renderToPath(ctx, path, layout.PostList(props)); err != nil {
 			return fmt.Errorf("render tags: %w", err)
 		}
 	}
 
 	return nil
+}
+
+func renderToPath(ctx context.Context, path string, component templ.Component) error {
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	log.Printf("Rendering %s...", path)
+	return component.Render(ctx, f)
 }
