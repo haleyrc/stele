@@ -10,22 +10,26 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	"github.com/haleyrc/stele/blog"
 	"github.com/haleyrc/stele/template/components/icons"
 	"strconv"
 	"time"
 )
 
-type LayoutViewModel struct {
+type LayoutProps struct {
 	Author      string
 	Copyright   string
 	Description string
-	Menu        []blog.MenuLink
+	Menu        []MenuLink
 	Name        string
 	Title       string
 }
 
-func footer(copyright, author string, menu []blog.MenuLink) templ.Component {
+type MenuLink struct {
+	Label string
+	Path  string
+}
+
+func footer(copyright, author string, menu []MenuLink) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -73,7 +77,7 @@ func footer(copyright, author string, menu []blog.MenuLink) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(l.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 28, Col: 14}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 32, Col: 14}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -100,7 +104,7 @@ func footer(copyright, author string, menu []blog.MenuLink) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(copyright)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 37, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 41, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -113,7 +117,7 @@ func footer(copyright, author string, menu []blog.MenuLink) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(time.Now().Year()))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 37, Col: 54}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 41, Col: 54}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -126,7 +130,7 @@ func footer(copyright, author string, menu []blog.MenuLink) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(author)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 37, Col: 65}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 41, Col: 65}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -182,7 +186,7 @@ func head(name, title, description string) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 53, Col: 48}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 57, Col: 48}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -195,7 +199,7 @@ func head(name, title, description string) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%s - %s", name, title))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 54, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 58, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -208,7 +212,7 @@ func head(name, title, description string) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs("manifest.webmanifest")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 83, Col: 52}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 87, Col: 52}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -222,7 +226,7 @@ func head(name, title, description string) templ.Component {
 	})
 }
 
-func header(title string, menu []blog.MenuLink) templ.Component {
+func header(title string, menu []MenuLink) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -260,7 +264,7 @@ func header(title string, menu []blog.MenuLink) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 92, Col: 11}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 96, Col: 11}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -287,7 +291,7 @@ func header(title string, menu []blog.MenuLink) templ.Component {
 			var templ_7745c5c3_Var18 string
 			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(l.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 97, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/layout.templ`, Line: 101, Col: 15}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 			if templ_7745c5c3_Err != nil {
@@ -340,7 +344,7 @@ func header(title string, menu []blog.MenuLink) templ.Component {
 	})
 }
 
-func Layout(model LayoutViewModel) templ.Component {
+func Layout(props LayoutProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -362,7 +366,7 @@ func Layout(model LayoutViewModel) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = head(model.Name, model.Title, model.Description).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = head(props.Name, props.Title, props.Description).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -370,7 +374,7 @@ func Layout(model LayoutViewModel) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = header(model.Title, model.Menu).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = header(props.Title, props.Menu).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -396,7 +400,7 @@ func Layout(model LayoutViewModel) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = footer(model.Copyright, model.Author, model.Menu).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = footer(props.Copyright, props.Author, props.Menu).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

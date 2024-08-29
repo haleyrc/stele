@@ -1,28 +1,36 @@
 package components
 
-import "github.com/haleyrc/stele/blog"
+import "time"
 
 const tagLinkStyles = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 hover:underline"
 
-templ Post(post *blog.Post) {
+type PostProps struct {
+	Content   string
+	Slug      string
+	Tags      []string
+	Timestamp time.Time
+	Title     string
+}
+
+templ Post(props PostProps) {
 	<article class="text-justify">
 		<h1 class="text-2xl font-light">
-			<a class="hover:underline" href={ urlf("/posts/" + post.Slug) }>
-				{ post.Title }
+			<a class="hover:underline" href={ urlf("/posts/" + props.Slug) }>
+				{ props.Title }
 			</a>
 		</h1>
 		<div class="text-xs font-extralight pb-1">
-			{ post.Timestamp.Format("January 2, 2006") }
+			{ props.Timestamp.Format("January 2, 2006") }
 		</div>
 		<div class="flex gap-x-2 pb-4">
-			for _, tag := range post.Tags {
+			for _, tag := range props.Tags {
 				<a class={ tagLinkStyles } href={ urlf("/tags/" + tag) }>
 					{ tag }
 				</a>
 			}
 		</div>
 		<div class="markdown">
-			@templ.Raw(post.Content())
+			@templ.Raw(props.Content)
 		</div>
 	</article>
 }

@@ -1,4 +1,4 @@
-package blog
+package stele
 
 import (
 	"bytes"
@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/haleyrc/stele/internal/markdown"
+	"github.com/haleyrc/stele/template"
+	"github.com/haleyrc/stele/template/components"
 )
 
 type Post struct {
@@ -20,6 +22,16 @@ type Post struct {
 	Tags        []string
 	Timestamp   time.Time
 	Title       string
+}
+
+func postToProps(p Post) components.PostProps {
+	return components.PostProps{
+		Content:   p.Content(),
+		Slug:      p.Slug,
+		Tags:      p.Tags,
+		Timestamp: p.Timestamp,
+		Title:     p.Title,
+	}
 }
 
 func NewPost(path string) (*Post, error) {
@@ -47,12 +59,35 @@ func NewPost(path string) (*Post, error) {
 
 type PostIndex []PostIndexEntry
 
+func postIndexToProps(index PostIndex) []template.PostIndexEntryProps {
+	props := make([]template.PostIndexEntryProps, 0, len(index))
+	for _, entry := range index {
+		props = append(props, template.PostIndexEntryProps{
+			Count: len(entry.Posts),
+			Key:   entry.Key,
+		})
+	}
+	return props
+}
+
 type PostIndexEntry struct {
 	Key   string
 	Posts Posts
 }
 
 type Posts []Post
+
+func postsToProps(posts Posts) components.PostListProps {
+	props := make([]components.PostListEntryProps, 0, len(posts))
+	for _, post := range posts {
+		props = append(props, components.PostListEntryProps{
+			Slug:      post.Slug,
+			Timestamp: post.Timestamp,
+			Title:     post.Title,
+		})
+	}
+	return components.PostListProps{Posts: props}
+}
 
 func NewPosts(dir string) (Posts, error) {
 	files, err := filepath.Glob(filepath.Join(dir, "*.md"))

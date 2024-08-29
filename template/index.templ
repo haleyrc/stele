@@ -1,28 +1,25 @@
 package template
 
-import (
-	"github.com/haleyrc/stele/blog"
-	"github.com/haleyrc/stele/template/components"
-)
+import "github.com/haleyrc/stele/template/components"
 
-type IndexViewModel struct {
-	Layout      LayoutViewModel
-	LatestPost  *blog.Post
-	RecentPosts blog.Posts
+type IndexProps struct {
+	Layout      LayoutProps
+	LatestPost  *components.PostProps
+	RecentPosts components.PostListProps
 }
 
-templ Index(model IndexViewModel) {
-	@Layout(model.Layout) {
-		if model.LatestPost != nil {
-			@components.Post(model.LatestPost)
+templ Index(props IndexProps) {
+	@Layout(props.Layout) {
+		if props.LatestPost != nil {
+			@components.Post(*props.LatestPost)
 		}
-		if len(model.RecentPosts) > 0 {
+		if len(props.RecentPosts.Posts) > 0 {
 			<hr class="my-4"/>
 			<section>
 				<h2 class="text-lg font-extralight pb-2">
 					Recent posts
 				</h2>
-				@components.PostList(model.RecentPosts)
+				@components.PostList(props.RecentPosts)
 			</section>
 		}
 	}

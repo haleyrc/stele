@@ -10,16 +10,21 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	"github.com/haleyrc/stele/blog"
+	"strconv"
 )
 
-type PostIndexViewModel struct {
-	Layout LayoutViewModel
-	Index  blog.PostIndex
-	Prefix string
+type PostIndexProps struct {
+	Layout  LayoutProps
+	Entries []PostIndexEntryProps
+	Prefix  string
 }
 
-func PostIndex(model PostIndexViewModel) templ.Component {
+type PostIndexEntryProps struct {
+	Count int
+	Key   string
+}
+
+func PostIndex(props PostIndexProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -53,12 +58,12 @@ func PostIndex(model PostIndexViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			for _, entry := range model.Index {
+			for _, entry := range props.Entries {
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a class=\"hover:underline\" href=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var3 templ.SafeURL = urlf(model.Prefix + entry.Key)
+				var templ_7745c5c3_Var3 templ.SafeURL = urlf(props.Prefix + entry.Key)
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var3)))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -70,7 +75,7 @@ func PostIndex(model PostIndexViewModel) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(entry.Key)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/postindex.templ`, Line: 20, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/postindex.templ`, Line: 25, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -81,9 +86,9 @@ func PostIndex(model PostIndexViewModel) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var5 string
-				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", len(entry.Posts)))
+				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(entry.Count))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/postindex.templ`, Line: 20, Col: 58}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/postindex.templ`, Line: 25, Col: 48}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -100,7 +105,7 @@ func PostIndex(model PostIndexViewModel) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = Layout(model.Layout).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Layout(props.Layout).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

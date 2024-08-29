@@ -1,14 +1,12 @@
 package template
 
-import "github.com/haleyrc/stele/blog"
-
-type PageViewModel struct {
-	Layout LayoutViewModel
-	Page   *blog.Page
+type PageProps struct {
+	Layout  LayoutProps
+	Content string
 }
 
-templ Page(model PageViewModel) {
-	@Layout(model.Layout) {
-		@templ.Raw(string(model.Page.Content()))
+templ Page(props PageProps) {
+	@Layout(props.Layout) {
+		@templ.Raw(props.Content)
 	}
 }

@@ -2,22 +2,27 @@ package template
 
 import (
 	"fmt"
-	"github.com/haleyrc/stele/blog"
+	"strconv"
 )
 
-type PostIndexViewModel struct {
-	Layout LayoutViewModel
-	Index  blog.PostIndex
-	Prefix string
+type PostIndexProps struct {
+	Layout  LayoutProps
+	Entries []PostIndexEntryProps
+	Prefix  string
 }
 
-templ PostIndex(model PostIndexViewModel) {
-	@Layout(model.Layout) {
+type PostIndexEntryProps struct {
+	Count int
+	Key   string
+}
+
+templ PostIndex(props PostIndexProps) {
+	@Layout(props.Layout) {
 		<ul>
-			for _, entry := range model.Index {
+			for _, entry := range props.Entries {
 				<li>
-					<a class="hover:underline" href={ urlf(model.Prefix + entry.Key) }>
-						{ entry.Key } ({ fmt.Sprintf("%d", len(entry.Posts)) })
+					<a class="hover:underline" href={ urlf(props.Prefix + entry.Key) }>
+						{ entry.Key } ({ strconv.Itoa(entry.Count) })
 					</a>
 				</li>
 			}

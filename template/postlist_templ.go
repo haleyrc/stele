@@ -8,18 +8,15 @@ package template
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"github.com/haleyrc/stele/blog"
-	"github.com/haleyrc/stele/template/components"
-)
+import "github.com/haleyrc/stele/template/components"
 
-type PostListViewModel struct {
-	Layout  LayoutViewModel
+type PostListProps struct {
+	Layout  LayoutProps
 	Heading string
-	Posts   blog.Posts
+	Posts   components.PostListProps
 }
 
-func PostList(model PostListViewModel) templ.Component {
+func PostList(props PostListProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -54,9 +51,9 @@ func PostList(model PostListViewModel) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(model.Heading)
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(props.Heading)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/postlist.templ`, Line: 17, Col: 18}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/postlist.templ`, Line: 14, Col: 18}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -66,13 +63,13 @@ func PostList(model PostListViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.PostList(model.Posts).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.PostList(props.Posts).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = Layout(model.Layout).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Layout(props.Layout).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

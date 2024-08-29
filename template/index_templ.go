@@ -8,18 +8,15 @@ package template
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"github.com/haleyrc/stele/blog"
-	"github.com/haleyrc/stele/template/components"
-)
+import "github.com/haleyrc/stele/template/components"
 
-type IndexViewModel struct {
-	Layout      LayoutViewModel
-	LatestPost  *blog.Post
-	RecentPosts blog.Posts
+type IndexProps struct {
+	Layout      LayoutProps
+	LatestPost  *components.PostProps
+	RecentPosts components.PostListProps
 }
 
-func Index(model IndexViewModel) templ.Component {
+func Index(props IndexProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -49,8 +46,8 @@ func Index(model IndexViewModel) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			if model.LatestPost != nil {
-				templ_7745c5c3_Err = components.Post(model.LatestPost).Render(ctx, templ_7745c5c3_Buffer)
+			if props.LatestPost != nil {
+				templ_7745c5c3_Err = components.Post(*props.LatestPost).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -59,12 +56,12 @@ func Index(model IndexViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if len(model.RecentPosts) > 0 {
+			if len(props.RecentPosts.Posts) > 0 {
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<hr class=\"my-4\"><section><h2 class=\"text-lg font-extralight pb-2\">Recent posts</h2>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = components.PostList(model.RecentPosts).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = components.PostList(props.RecentPosts).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -75,7 +72,7 @@ func Index(model IndexViewModel) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = Layout(model.Layout).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Layout(props.Layout).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

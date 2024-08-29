@@ -1,10 +1,12 @@
-package blog
+package stele
 
 import (
 	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v3"
+
+	"github.com/haleyrc/stele/template"
 )
 
 type Config struct {
@@ -33,4 +35,15 @@ func NewConfig(path string) (*Config, error) {
 type MenuLink struct {
 	Label string `yaml:"label"`
 	Path  string `yaml:"path"`
+}
+
+func menuLinksToProps(links []MenuLink) []template.MenuLink {
+	props := make([]template.MenuLink, 0, len(links))
+	for _, link := range links {
+		props = append(props, template.MenuLink{
+			Label: link.Label,
+			Path:  link.Path,
+		})
+	}
+	return props
 }

@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/haleyrc/stele/blog"
 	"github.com/haleyrc/stele/template"
 )
 
@@ -17,20 +16,20 @@ func Build(ctx context.Context, srcDir, dstDir string) error {
 	start := time.Now()
 
 	log.Println("Loading configuration...")
-	cfg, err := blog.NewConfig(filepath.Join(srcDir, "config.yml"))
+	cfg, err := NewConfig(filepath.Join(srcDir, "config.yml"))
 	if err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 
 	log.Println("Indexing posts...")
-	posts, err := blog.NewPosts(filepath.Join(srcDir, "posts"))
+	posts, err := NewPosts(filepath.Join(srcDir, "posts"))
 	if err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 	log.Printf("Found %d posts.", len(posts))
 
 	log.Println("Indexing pages...")
-	pages, err := blog.NewPages(filepath.Join(srcDir, "pages"))
+	pages, err := NewPages(filepath.Join(srcDir, "pages"))
 	if err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
@@ -97,7 +96,7 @@ func createOutputDirectory(dir string) error {
 	return nil
 }
 
-func renderArchive(ctx context.Context, dir string, cfg *blog.Config, posts blog.Posts) error {
+func renderArchive(ctx context.Context, dir string, cfg *Config, posts Posts) error {
 	path := filepath.Join(dir, "archive.html")
 
 	f, err := os.Create(path)
@@ -112,17 +111,17 @@ func renderArchive(ctx context.Context, dir string, cfg *blog.Config, posts blog
 		copyright = first.Timestamp.Year()
 	}
 
-	vm := template.PostIndexViewModel{
-		Layout: template.LayoutViewModel{
+	vm := template.PostIndexProps{
+		Layout: template.LayoutProps{
 			Author:      cfg.Author,
 			Copyright:   strconv.Itoa(copyright),
 			Description: cfg.Description,
-			Menu:        cfg.Menu,
+			Menu:        menuLinksToProps(cfg.Menu),
 			Name:        "Archive",
 			Title:       cfg.Title,
 		},
-		Index:  postsByYear,
-		Prefix: "/archive/",
+		Entries: postIndexToProps(postsByYear),
+		Prefix:  "/archive/",
 	}
 
 	log.Printf("Rendering %s...", path)
@@ -143,17 +142,17 @@ func renderArchive(ctx context.Context, dir string, cfg *blog.Config, posts blog
 			copyright = first.Timestamp.Year()
 		}
 
-		vm := template.PostListViewModel{
-			Layout: template.LayoutViewModel{
+		vm := template.PostListProps{
+			Layout: template.LayoutProps{
 				Author:      cfg.Author,
 				Copyright:   strconv.Itoa(copyright),
 				Description: cfg.Description,
-				Menu:        cfg.Menu,
+				Menu:        menuLinksToProps(cfg.Menu),
 				Name:        fmt.Sprintf("Posts from %s", entry.Key),
 				Title:       cfg.Title,
 			},
 			Heading: fmt.Sprintf("Posts from %s", entry.Key),
-			Posts:   entry.Posts,
+			Posts:   postsToProps(entry.Posts),
 		}
 
 		log.Printf("Rendering %s...", path)
@@ -165,7 +164,7 @@ func renderArchive(ctx context.Context, dir string, cfg *blog.Config, posts blog
 	return nil
 }
 
-func renderIndex(ctx context.Context, dir string, cfg *blog.Config, posts blog.Posts) error {
+func renderIndex(ctx context.Context, dir string, cfg *Config, posts Posts) error {
 	path := filepath.Join(dir, "index.html")
 
 	f, err := os.Create(path)
@@ -182,17 +181,21 @@ func renderIndex(ctx context.Context, dir string, cfg *blog.Config, posts blog.P
 		copyright = first.Timestamp.Year()
 	}
 
-	vm := template.IndexViewModel{
-		Layout: template.LayoutViewModel{
+	vm := template.IndexProps{
+		Layout: template.LayoutProps{
 			Author:      cfg.Author,
 			Copyright:   strconv.Itoa(copyright),
 			Description: cfg.Description,
-			Menu:        cfg.Menu,
+			Menu:        menuLinksToProps(cfg.Menu),
 			Name:        "Home Page",
 			Title:       cfg.Title,
 		},
-		LatestPost:  latestPost,
-		RecentPosts: recentPosts,
+		RecentPosts: postsToProps(recentPosts),
+	}
+
+	if latestPost != nil {
+		postProps := postToProps(*latestPost)
+		vm.LatestPost = &postProps
 	}
 
 	log.Printf("Rendering %s...", path)
@@ -203,7 +206,7 @@ func renderIndex(ctx context.Context, dir string, cfg *blog.Config, posts blog.P
 	return nil
 }
 
-func renderManifest(ctx context.Context, dir string, cfg *blog.Config) error {
+func renderManifest(ctx context.Context, dir string, cfg *Config) error {
 	path := filepath.Join(dir, "manifest.webmanifest")
 
 	f, err := os.Create(path)
@@ -212,7 +215,7 @@ func renderManifest(ctx context.Context, dir string, cfg *blog.Config) error {
 	}
 	defer f.Close()
 
-	m, err := blog.NewManifest(cfg)
+	m, err := NewManifest(cfg)
 	if err != nil {
 		return err
 	}
@@ -222,7 +225,7 @@ func renderManifest(ctx context.Context, dir string, cfg *blog.Config) error {
 	return m.Render(ctx, f)
 }
 
-func renderPages(ctx context.Context, dir string, cfg *blog.Config, pages blog.Pages, posts blog.Posts) error {
+func renderPages(ctx context.Context, dir string, cfg *Config, pages Pages, posts Posts) error {
 	for _, page := range pages {
 		path := filepath.Join(dir, page.Slug+".html")
 
@@ -237,16 +240,16 @@ func renderPages(ctx context.Context, dir string, cfg *blog.Config, pages blog.P
 			copyright = first.Timestamp.Year()
 		}
 
-		vm := template.PageViewModel{
-			Layout: template.LayoutViewModel{
+		vm := template.PageProps{
+			Layout: template.LayoutProps{
 				Author:      cfg.Author,
 				Copyright:   strconv.Itoa(copyright),
 				Description: cfg.Description,
-				Menu:        cfg.Menu,
+				Menu:        menuLinksToProps(cfg.Menu),
 				Name:        page.Slug,
 				Title:       cfg.Title,
 			},
-			Page: &page,
+			Content: page.Content(),
 		}
 
 		log.Printf("Rendering %s...", path)
@@ -258,7 +261,7 @@ func renderPages(ctx context.Context, dir string, cfg *blog.Config, pages blog.P
 	return nil
 }
 
-func renderPosts(ctx context.Context, dir string, cfg *blog.Config, posts blog.Posts) error {
+func renderPosts(ctx context.Context, dir string, cfg *Config, posts Posts) error {
 	for _, post := range posts {
 		path := filepath.Join(dir, "posts", post.Slug+".html")
 
@@ -273,16 +276,16 @@ func renderPosts(ctx context.Context, dir string, cfg *blog.Config, posts blog.P
 			copyright = first.Timestamp.Year()
 		}
 
-		vm := template.PostViewModel{
-			Layout: template.LayoutViewModel{
+		vm := template.PostProps{
+			Layout: template.LayoutProps{
 				Author:      cfg.Author,
 				Copyright:   strconv.Itoa(copyright),
 				Description: cfg.Description,
-				Menu:        cfg.Menu,
+				Menu:        menuLinksToProps(cfg.Menu),
 				Name:        post.Title,
 				Title:       cfg.Title,
 			},
-			Post: &post,
+			Post: postToProps(post),
 		}
 
 		log.Printf("Rendering %s...", path)
@@ -294,7 +297,7 @@ func renderPosts(ctx context.Context, dir string, cfg *blog.Config, posts blog.P
 	return nil
 }
 
-func renderRSS(ctx context.Context, dir string, cfg *blog.Config, posts blog.Posts) error {
+func renderRSS(ctx context.Context, dir string, cfg *Config, posts Posts) error {
 	path := filepath.Join(dir, "rss.xml")
 
 	f, err := os.Create(path)
@@ -303,7 +306,7 @@ func renderRSS(ctx context.Context, dir string, cfg *blog.Config, posts blog.Pos
 	}
 	defer f.Close()
 
-	feed, err := blog.NewFeed(cfg, posts)
+	feed, err := NewFeed(cfg, posts)
 	if err != nil {
 		return err
 	}
@@ -313,7 +316,7 @@ func renderRSS(ctx context.Context, dir string, cfg *blog.Config, posts blog.Pos
 	return feed.Render(ctx, f)
 }
 
-func renderTags(ctx context.Context, dir string, cfg *blog.Config, posts blog.Posts) error {
+func renderTags(ctx context.Context, dir string, cfg *Config, posts Posts) error {
 	path := filepath.Join(dir, "tags.html")
 
 	f, err := os.Create(path)
@@ -328,17 +331,17 @@ func renderTags(ctx context.Context, dir string, cfg *blog.Config, posts blog.Po
 		copyright = first.Timestamp.Year()
 	}
 
-	vm := template.PostIndexViewModel{
-		Layout: template.LayoutViewModel{
+	vm := template.PostIndexProps{
+		Layout: template.LayoutProps{
 			Author:      cfg.Author,
 			Copyright:   strconv.Itoa(copyright),
 			Description: cfg.Description,
-			Menu:        cfg.Menu,
+			Menu:        menuLinksToProps(cfg.Menu),
 			Name:        "Tags",
 			Title:       cfg.Title,
 		},
-		Index:  postsByTag,
-		Prefix: "/tags/",
+		Entries: postIndexToProps(postsByTag),
+		Prefix:  "/tags/",
 	}
 
 	log.Printf("Rendering %s...", path)
@@ -359,17 +362,17 @@ func renderTags(ctx context.Context, dir string, cfg *blog.Config, posts blog.Po
 			copyright = first.Timestamp.Year()
 		}
 
-		vm := template.PostListViewModel{
-			Layout: template.LayoutViewModel{
+		vm := template.PostListProps{
+			Layout: template.LayoutProps{
 				Author:      cfg.Author,
 				Copyright:   strconv.Itoa(copyright),
 				Description: cfg.Description,
-				Menu:        cfg.Menu,
+				Menu:        menuLinksToProps(cfg.Menu),
 				Name:        fmt.Sprintf("Posts tagged %q", entry.Key),
 				Title:       cfg.Title,
 			},
 			Heading: fmt.Sprintf("Posts tagged %q", entry.Key),
-			Posts:   entry.Posts,
+			Posts:   postsToProps(entry.Posts),
 		}
 
 		log.Printf("Rendering %s...", path)

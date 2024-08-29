@@ -10,10 +10,14 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	"github.com/haleyrc/stele/blog"
+	"time"
 )
 
-func PostList(posts blog.Posts) templ.Component {
+type PostListProps struct {
+	Posts []PostListEntryProps
+}
+
+func PostList(props PostListProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -35,7 +39,7 @@ func PostList(posts blog.Posts) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		for _, post := range posts {
+		for _, post := range props.Posts {
 			templ_7745c5c3_Err = postListEntry(post).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -49,7 +53,13 @@ func PostList(posts blog.Posts) templ.Component {
 	})
 }
 
-func postListEntry(p blog.Post) templ.Component {
+type PostListEntryProps struct {
+	Slug      string
+	Timestamp time.Time
+	Title     string
+}
+
+func postListEntry(props PostListEntryProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -72,9 +82,9 @@ func postListEntry(p blog.Post) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(p.Timestamp.Format("2006-01-02"))
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(props.Timestamp.Format("2006-01-02"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/components/postlist.templ`, Line: 21, Col: 37}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/components/postlist.templ`, Line: 31, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -84,7 +94,7 @@ func postListEntry(p blog.Post) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var4 templ.SafeURL = urlf("/posts/" + p.Slug)
+		var templ_7745c5c3_Var4 templ.SafeURL = urlf("/posts/" + props.Slug)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var4)))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -94,9 +104,9 @@ func postListEntry(p blog.Post) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(p.Title)
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/components/postlist.templ`, Line: 25, Col: 13}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/components/postlist.templ`, Line: 35, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {

@@ -1,17 +1,14 @@
 package template
 
-import (
-	"github.com/haleyrc/stele/blog"
-	"github.com/haleyrc/stele/template/components"
-)
+import "github.com/haleyrc/stele/template/components"
 
-type PostViewModel struct {
-	Layout LayoutViewModel
-	Post   *blog.Post
+type PostProps struct {
+	Layout LayoutProps
+	Post   components.PostProps
 }
 
-templ Post(model PostViewModel) {
-	@Layout(model.Layout) {
-		@components.Post(model.Post)
+templ Post(props PostProps) {
+	@Layout(props.Layout) {
+		@components.Post(props.Post)
 	}
 }

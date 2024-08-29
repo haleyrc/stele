@@ -1,21 +1,18 @@
 package template
 
-import (
-	"github.com/haleyrc/stele/blog"
-	"github.com/haleyrc/stele/template/components"
-)
+import "github.com/haleyrc/stele/template/components"
 
-type PostListViewModel struct {
-	Layout  LayoutViewModel
+type PostListProps struct {
+	Layout  LayoutProps
 	Heading string
-	Posts   blog.Posts
+	Posts   components.PostListProps
 }
 
-templ PostList(model PostListViewModel) {
-	@Layout(model.Layout) {
+templ PostList(props PostListProps) {
+	@Layout(props.Layout) {
 		<h1 class="text-xl font-bold pb-2">
-			{ model.Heading }
+			{ props.Heading }
 		</h1>
-		@components.PostList(model.Posts)
+		@components.PostList(props.Posts)
 	}
 }

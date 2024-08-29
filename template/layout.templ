@@ -2,22 +2,26 @@ package template
 
 import (
 	"fmt"
-	"github.com/haleyrc/stele/blog"
 	"github.com/haleyrc/stele/template/components/icons"
 	"strconv"
 	"time"
 )
 
-type LayoutViewModel struct {
+type LayoutProps struct {
 	Author      string
 	Copyright   string
 	Description string
-	Menu        []blog.MenuLink
+	Menu        []MenuLink
 	Name        string
 	Title       string
 }
 
-templ footer(copyright, author string, menu []blog.MenuLink) {
+type MenuLink struct {
+	Label string
+	Path  string
+}
+
+templ footer(copyright, author string, menu []MenuLink) {
 	<footer class="border-t pb-2 sm:py-2">
 		<nav class="flex flex-col pb-2 sm:hidden">
 			<a class="border-b py-2 hover:bg-gray-100 text-center" href={ templ.URL("/") }>
@@ -84,7 +88,7 @@ templ head(name, title, description string) {
 	</head>
 }
 
-templ header(title string, menu []blog.MenuLink) {
+templ header(title string, menu []MenuLink) {
 	<header class="border-b py-2">
 		<div class="px-4 sm:w-3/4 mx-auto flex justify-between align-center">
 			<a class="inline-flex items-center gap-2 text-xl font-bold" href={ templ.URL("/") }>
@@ -108,16 +112,16 @@ templ header(title string, menu []blog.MenuLink) {
 	</header>
 }
 
-templ Layout(model LayoutViewModel) {
+templ Layout(props LayoutProps) {
 	<!DOCTYPE html>
 	<html lang="en-US">
-		@head(model.Name, model.Title, model.Description)
+		@head(props.Name, props.Title, props.Description)
 		<body>
-			@header(model.Title, model.Menu)
+			@header(props.Title, props.Menu)
 			@main() {
 				{ children... }
 			}
-			@footer(model.Copyright, model.Author, model.Menu)
+			@footer(props.Copyright, props.Author, props.Menu)
 		</body>
 	</html>
 }
