@@ -118,14 +118,14 @@ func renderArchive(ctx context.Context, dir string, layout template.Layout, post
 	defer f.Close()
 
 	postsByYear := posts.ByYear()
-	vm := template.PostIndexProps{
+	props := template.PostIndexProps{
 		PageName: "Archive",
 		Entries:  postIndexToProps(postsByYear),
 		Prefix:   "/archive/",
 	}
 
 	log.Printf("Rendering %s...", path)
-	if err := layout.PostIndex(vm).Render(ctx, f); err != nil {
+	if err := layout.PostIndex(props).Render(ctx, f); err != nil {
 		return fmt.Errorf("render archive: %w", err)
 	}
 
@@ -137,13 +137,13 @@ func renderArchive(ctx context.Context, dir string, layout template.Layout, post
 			return fmt.Errorf("render archive: %w", err)
 		}
 
-		vm := template.PostListProps{
+		props := template.PostListProps{
 			Heading: fmt.Sprintf("Posts from %s", entry.Key),
 			Posts:   postsToProps(entry.Posts),
 		}
 
 		log.Printf("Rendering %s...", path)
-		if err := layout.PostList(vm).Render(ctx, f); err != nil {
+		if err := layout.PostList(props).Render(ctx, f); err != nil {
 			return fmt.Errorf("render archive: %w", err)
 		}
 	}
@@ -163,16 +163,16 @@ func renderIndex(ctx context.Context, dir string, layout template.Layout, posts 
 	latestPost, rest := posts.Head()
 	recentPosts := rest.MostRecent(10)
 
-	vm := template.IndexProps{
+	props := template.IndexProps{
 		RecentPosts: postsToProps(recentPosts),
 	}
 	if latestPost != nil {
 		postProps := postToProps(*latestPost)
-		vm.LatestPost = &postProps
+		props.LatestPost = &postProps
 	}
 
 	log.Printf("Rendering %s...", path)
-	if err := layout.Index(vm).Render(ctx, f); err != nil {
+	if err := layout.Index(props).Render(ctx, f); err != nil {
 		return fmt.Errorf("render index: %w", err)
 	}
 
@@ -208,13 +208,13 @@ func renderPages(ctx context.Context, dir string, layout template.Layout, pages 
 		}
 		defer f.Close()
 
-		vm := template.PageProps{
+		props := template.PageProps{
 			Content: page.Content(),
 			Slug:    page.Slug,
 		}
 
 		log.Printf("Rendering %s...", path)
-		if err := layout.Page(vm).Render(ctx, f); err != nil {
+		if err := layout.Page(props).Render(ctx, f); err != nil {
 			return fmt.Errorf("render pages: %w", err)
 		}
 	}
@@ -232,12 +232,12 @@ func renderPosts(ctx context.Context, dir string, layout template.Layout, posts 
 		}
 		defer f.Close()
 
-		vm := template.PostProps{
+		props := template.PostProps{
 			Post: postToProps(post),
 		}
 
 		log.Printf("Rendering %s...", path)
-		if err := layout.Post(vm).Render(ctx, f); err != nil {
+		if err := layout.Post(props).Render(ctx, f); err != nil {
 			return fmt.Errorf("render posts: %w", err)
 		}
 	}
@@ -274,14 +274,14 @@ func renderTags(ctx context.Context, dir string, layout template.Layout, posts P
 	defer f.Close()
 
 	postsByTag := posts.ByTag()
-	vm := template.PostIndexProps{
+	props := template.PostIndexProps{
 		PageName: "Tags",
 		Entries:  postIndexToProps(postsByTag),
 		Prefix:   "/tags/",
 	}
 
 	log.Printf("Rendering %s...", path)
-	if err := layout.PostIndex(vm).Render(ctx, f); err != nil {
+	if err := layout.PostIndex(props).Render(ctx, f); err != nil {
 		return fmt.Errorf("render tags: %w", err)
 	}
 
@@ -293,13 +293,13 @@ func renderTags(ctx context.Context, dir string, layout template.Layout, posts P
 			return fmt.Errorf("render tags: %w", err)
 		}
 
-		vm := template.PostListProps{
+		props := template.PostListProps{
 			Heading: fmt.Sprintf("Posts tagged %q", entry.Key),
 			Posts:   postsToProps(entry.Posts),
 		}
 
 		log.Printf("Rendering %s...", path)
-		if err := layout.PostList(vm).Render(ctx, f); err != nil {
+		if err := layout.PostList(props).Render(ctx, f); err != nil {
 			return fmt.Errorf("render tags: %w", err)
 		}
 	}
