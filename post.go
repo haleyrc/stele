@@ -24,16 +24,6 @@ type Post struct {
 	Title       string
 }
 
-func postToProps(p Post) components.PostProps {
-	return components.PostProps{
-		Content:   p.Content(),
-		Slug:      p.Slug,
-		Tags:      p.Tags,
-		Timestamp: p.Timestamp,
-		Title:     p.Title,
-	}
-}
-
 func NewPost(path string) (*Post, error) {
 	meta, err := markdown.ParseFrontmatter(path)
 	if err != nil {
@@ -57,18 +47,15 @@ func NewPost(path string) (*Post, error) {
 	return post, nil
 }
 
-type PostIndex []PostIndexEntry
-
-func postIndexToProps(index PostIndex) []template.PostIndexEntryProps {
-	props := make([]template.PostIndexEntryProps, 0, len(index))
-	for _, entry := range index {
-		props = append(props, template.PostIndexEntryProps{
-			Count: len(entry.Posts),
-			Key:   entry.Key,
-		})
+func (p *Post) Content() string {
+	var buff bytes.Buffer
+	if err := markdown.Parse(p.Path, &buff); err != nil {
+		panic(fmt.Errorf("blog: post: content: %w", err))
 	}
-	return props
+	return buff.String()
 }
+
+type PostIndex []PostIndexEntry
 
 type PostIndexEntry struct {
 	Key   string
@@ -76,18 +63,6 @@ type PostIndexEntry struct {
 }
 
 type Posts []Post
-
-func postsToProps(posts Posts) components.PostListProps {
-	props := make([]components.PostListEntryProps, 0, len(posts))
-	for _, post := range posts {
-		props = append(props, components.PostListEntryProps{
-			Slug:      post.Slug,
-			Timestamp: post.Timestamp,
-			Title:     post.Title,
-		})
-	}
-	return components.PostListProps{Posts: props}
-}
 
 func NewPosts(dir string) (Posts, error) {
 	files, err := filepath.Glob(filepath.Join(dir, "*.md"))
@@ -116,31 +91,6 @@ func NewPosts(dir string) (Posts, error) {
 
 	return posts, nil
 }
-
-func (ps Posts) First() *Post {
-	if len(ps) == 0 {
-		return nil
-	}
-	return &ps[len(ps)-1]
-}
-
-func (ps Posts) Head() (*Post, Posts) {
-	if len(ps) == 0 {
-		return nil, nil
-	}
-	if len(ps) == 1 {
-		return &ps[0], nil
-	}
-	return &ps[0], ps[1:]
-}
-
-func (ps Posts) MostRecent(n int) Posts {
-	if len(ps) < n {
-		n = len(ps)
-	}
-	return ps[:n]
-}
-
 func (ps Posts) ByTag() PostIndex {
 	m := map[string]Posts{}
 	for _, post := range ps {
@@ -186,12 +136,28 @@ func (ps Posts) ByYear() PostIndex {
 	return idx
 }
 
-func (p *Post) Content() string {
-	var buff bytes.Buffer
-	if err := markdown.Parse(p.Path, &buff); err != nil {
-		panic(fmt.Errorf("blog: post: content: %w", err))
+func (ps Posts) First() *Post {
+	if len(ps) == 0 {
+		return nil
 	}
-	return buff.String()
+	return &ps[len(ps)-1]
+}
+
+func (ps Posts) Head() (*Post, Posts) {
+	if len(ps) == 0 {
+		return nil, nil
+	}
+	if len(ps) == 1 {
+		return &ps[0], nil
+	}
+	return &ps[0], ps[1:]
+}
+
+func (ps Posts) MostRecent(n int) Posts {
+	if len(ps) < n {
+		n = len(ps)
+	}
+	return ps[:n]
 }
 
 func parsePostPath(filename string) (string, time.Time, error) {
@@ -204,4 +170,37 @@ func parsePostPath(filename string) (string, time.Time, error) {
 	}
 
 	return nameParts[1], ts, nil
+}
+
+func postToProps(p Post) components.PostProps {
+	return components.PostProps{
+		Content:   p.Content(),
+		Slug:      p.Slug,
+		Tags:      p.Tags,
+		Timestamp: p.Timestamp,
+		Title:     p.Title,
+	}
+}
+
+func postIndexToProps(index PostIndex) []template.PostIndexEntryProps {
+	props := make([]template.PostIndexEntryProps, 0, len(index))
+	for _, entry := range index {
+		props = append(props, template.PostIndexEntryProps{
+			Count: len(entry.Posts),
+			Key:   entry.Key,
+		})
+	}
+	return props
+}
+
+func postsToProps(posts Posts) components.PostListProps {
+	props := make([]components.PostListEntryProps, 0, len(posts))
+	for _, post := range posts {
+		props = append(props, components.PostListEntryProps{
+			Slug:      post.Slug,
+			Timestamp: post.Timestamp,
+			Title:     post.Title,
+		})
+	}
+	return components.PostListProps{Posts: props}
 }

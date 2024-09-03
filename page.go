@@ -20,6 +20,14 @@ func NewPage(path string) (*Page, error) {
 	return page, nil
 }
 
+func (p Page) Content() string {
+	contents, err := os.ReadFile(p.Path)
+	if err != nil {
+		panic(fmt.Errorf("blog: page: content: %w", err))
+	}
+	return string(contents)
+}
+
 type Pages []Page
 
 func NewPages(dir string) (Pages, error) {
@@ -38,12 +46,4 @@ func NewPages(dir string) (Pages, error) {
 	}
 
 	return pages, nil
-}
-
-func (p Page) Content() string {
-	contents, err := os.ReadFile(p.Path)
-	if err != nil {
-		panic(fmt.Errorf("blog: page: content: %w", err))
-	}
-	return string(contents)
 }
