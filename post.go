@@ -15,10 +15,21 @@ import (
 	"github.com/haleyrc/stele/template/components"
 )
 
+// Frontmatter represents all of the supported frontmatter fields for posts.
+type Frontmatter struct {
+	// A short description of the post.
+	Description string `yaml:"description"`
+
+	// A list of tags to associate with the post.
+	Tags []string `yaml:"tags"`
+
+	// The title of the post.
+	Title string `yaml:"title"`
+}
+
 // Post represents a single markdown post.
 type Post struct {
-	// A short description of the post.
-	Description string
+	Frontmatter
 
 	// The path to the file on disk.
 	Path string
@@ -26,20 +37,14 @@ type Post struct {
 	// A URL-safe identifier for the post.
 	Slug string
 
-	// A set of tags to associate with the post.
-	Tags []string
-
 	// The "authored date" for the post.
 	Timestamp time.Time
-
-	// The title of the post.
-	Title string
 }
 
 // NewPost returns a Post object by parsing the file at path.
 func NewPost(path string) (*Post, error) {
-	meta, err := markdown.ParseFrontmatter(path)
-	if err != nil {
+	var meta Frontmatter
+	if err := markdown.ParseFrontmatter(path, &meta); err != nil {
 		return nil, fmt.Errorf("blog: new post: %w", err)
 	}
 
@@ -49,12 +54,10 @@ func NewPost(path string) (*Post, error) {
 	}
 
 	post := &Post{
-		Description: meta.Description,
+		Frontmatter: meta,
 		Path:        path,
 		Slug:        slug,
-		Tags:        meta.Tags,
 		Timestamp:   timestamp,
-		Title:       meta.Title,
 	}
 
 	return post, nil

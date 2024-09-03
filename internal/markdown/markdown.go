@@ -39,30 +39,22 @@ func Parse(path string, w io.Writer) error {
 	return nil
 }
 
-// Frontmatter represents all of the supported frontmatter fields for posts.
-type Frontmatter struct {
-	Description string   `yaml:"description"`
-	Tags        []string `yaml:"tags"`
-	Title       string   `yaml:"title"`
-}
-
 // ParseFrontmatter reads the file at path and returns the parsed frontmatter.
-func ParseFrontmatter(path string) (*Frontmatter, error) {
+func ParseFrontmatter(path string, fm any) error {
 	ctx := parser.NewContext()
 
 	contents, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("markdown: parse frontmatter: %w", err)
+		return fmt.Errorf("markdown: parse frontmatter: %w", err)
 	}
 
 	if err := defaultParser.Convert(contents, io.Discard, parser.WithContext(ctx)); err != nil {
-		return nil, fmt.Errorf("markdown: parse frontmatter: %w", err)
+		return fmt.Errorf("markdown: parse frontmatter: %w", err)
 	}
 
-	var fm Frontmatter
 	if err := frontmatter.Get(ctx).Decode(&fm); err != nil {
-		return nil, fmt.Errorf("markdown: parse frontmatter: %w", err)
+		return fmt.Errorf("markdown: parse frontmatter: %w", err)
 	}
 
-	return &fm, nil
+	return nil
 }
