@@ -7,11 +7,6 @@ import (
 	"time"
 )
 
-// LayoutFunc represents a function that takes the name of a specific page
-// (e.g. "Home") and returns a component that can take other components as
-// children; that is: a layout.
-type LayoutFunc func(pageName string) templ.Component
-
 // MenuLink represents a link that will appear in the main page navigation.
 type MenuLink struct {
 	// The text to show the user.
@@ -27,7 +22,7 @@ type MenuLink struct {
 // The default layout ensures that all required CSS is linked in, that the RSS
 // feed and web manifest are present, and that page titles are correctly
 // formatted for SEO.
-func DefaultLayout(title, description, author, copyright string, menu []MenuLink) LayoutFunc {
+func DefaultLayout(title, description, author, copyright string, menu []MenuLink) func(string) templ.Component {
 	return func(pageName string) templ.Component {
 		return layout(title, description, author, copyright, menu, pageName)
 	}

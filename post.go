@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/haleyrc/stele/internal/markdown"
-	"github.com/haleyrc/stele/template"
 	"github.com/haleyrc/stele/template/components"
+	"github.com/haleyrc/stele/template/pages"
 )
 
 // Frontmatter represents all of the supported frontmatter fields for posts.
@@ -219,10 +219,10 @@ func postToProps(p Post) components.PostProps {
 	}
 }
 
-func postIndexToProps(index PostIndex) []template.PostIndexEntryProps {
-	props := make([]template.PostIndexEntryProps, 0, len(index))
+func postIndexToProps(index PostIndex) []pages.PostIndexEntryProps {
+	props := make([]pages.PostIndexEntryProps, 0, len(index))
 	for _, entry := range index {
-		props = append(props, template.PostIndexEntryProps{
+		props = append(props, pages.PostIndexEntryProps{
 			Count: len(entry.Posts),
 			Key:   entry.Key,
 		})
