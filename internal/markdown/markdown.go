@@ -39,7 +39,8 @@ func Parse(path string, w io.Writer) error {
 	return nil
 }
 
-// ParseFrontmatter reads the file at path and returns the parsed frontmatter.
+// ParseFrontmatter reads the file at path and attempts to populate fm with the
+// values found in the markdown frontmatter block.
 func ParseFrontmatter(path string, fm any) error {
 	ctx := parser.NewContext()
 
