@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -22,7 +23,7 @@ func main() {
 	command := strings.ToLower(os.Args[1])
 	switch command {
 	case "build":
-		runBuild(ctx, os.Args[2:]...)
+		runBuild(ctx)
 	case "dev":
 		runDev(ctx)
 	default:
@@ -31,9 +32,12 @@ func main() {
 	}
 }
 
-func printUsage() {}
+func printUsage() {
+	fmt.Fprintln(os.Stderr, strings.TrimSpace(usage))
+	fmt.Fprintln(os.Stderr)
+}
 
-func runBuild(ctx context.Context, _ ...string) {
+func runBuild(ctx context.Context) {
 	if err := stele.Build(ctx, ".", "dist"); err != nil {
 		exitWithError(err)
 	}
@@ -80,3 +84,14 @@ func exitWithError(err error) {
 	log.Println("ERR:", err)
 	os.Exit(1)
 }
+
+const usage = `
+A no frills blogging platform for people with analysis paralysis.
+
+USAGE
+  stele COMMAND
+
+COMMANDS
+  build: Create a set of deployable assets
+  dev:   Run a local server for previewing content
+`
