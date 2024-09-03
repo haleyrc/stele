@@ -5,8 +5,8 @@ type PageProps struct {
 	Slug    string
 }
 
-templ (l Layout) Page(props PageProps) {
-	@l.Layout(props.Slug) {
+templ Page(layout LayoutFunc, props PageProps) {
+	@layout(props.Slug) {
 		@templ.Raw(props.Content)
 	}
 }

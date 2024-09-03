@@ -45,13 +45,13 @@ func Build(ctx context.Context, srcDir, dstDir string) error {
 	if first := posts.First(); first != nil {
 		copyright = first.Timestamp.Year()
 	}
-	layout := template.Layout{
-		Author:      cfg.Author,
-		Copyright:   strconv.Itoa(copyright),
-		Description: cfg.Description,
-		Menu:        menuLinksToProps(cfg.Menu),
-		Title:       cfg.Title,
-	}
+	layout := template.DefaultLayout(
+		cfg.Title,
+		cfg.Description,
+		cfg.Author,
+		strconv.Itoa(copyright),
+		menuLinksToProps(cfg.Menu),
+	)
 
 	if err := renderIndex(ctx, dstDir, layout, posts); err != nil {
 		return fmt.Errorf("stele: build: %w", err)
@@ -110,7 +110,7 @@ func createOutputDirectory(dir string) error {
 	return nil
 }
 
-func renderArchive(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
+func renderArchive(ctx context.Context, dir string, layout template.LayoutFunc, posts Posts) error {
 	path := filepath.Join(dir, "archive.html")
 	postsByYear := posts.ByYear()
 
@@ -120,7 +120,7 @@ func renderArchive(ctx context.Context, dir string, layout template.Layout, post
 		Prefix:   "/archive/",
 	}
 
-	if err := renderToPath(ctx, path, layout.PostIndex(props)); err != nil {
+	if err := renderToPath(ctx, path, template.PostIndex(layout, props)); err != nil {
 		return fmt.Errorf("render archive: %w", err)
 	}
 
@@ -132,7 +132,7 @@ func renderArchive(ctx context.Context, dir string, layout template.Layout, post
 			Posts:   postsToProps(entry.Posts),
 		}
 
-		if err := renderToPath(ctx, path, layout.PostList(props)); err != nil {
+		if err := renderToPath(ctx, path, template.PostList(layout, props)); err != nil {
 			return fmt.Errorf("render archive: %w", err)
 		}
 	}
@@ -140,7 +140,7 @@ func renderArchive(ctx context.Context, dir string, layout template.Layout, post
 	return nil
 }
 
-func renderIndex(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
+func renderIndex(ctx context.Context, dir string, layout template.LayoutFunc, posts Posts) error {
 	path := filepath.Join(dir, "index.html")
 
 	latestPost, rest := posts.Head()
@@ -154,7 +154,7 @@ func renderIndex(ctx context.Context, dir string, layout template.Layout, posts 
 		props.LatestPost = &postProps
 	}
 
-	if err := renderToPath(ctx, path, layout.Index(props)); err != nil {
+	if err := renderToPath(ctx, path, template.Index(layout, props)); err != nil {
 		return fmt.Errorf("render index: %w", err)
 	}
 
@@ -180,7 +180,7 @@ func renderManifest(ctx context.Context, dir string, cfg *Config) error {
 	return m.Render(ctx, f)
 }
 
-func renderPages(ctx context.Context, dir string, layout template.Layout, pages Pages) error {
+func renderPages(ctx context.Context, dir string, layout template.LayoutFunc, pages Pages) error {
 	for _, page := range pages {
 		path := filepath.Join(dir, page.Slug+".html")
 
@@ -189,7 +189,7 @@ func renderPages(ctx context.Context, dir string, layout template.Layout, pages 
 			Slug:    page.Slug,
 		}
 
-		if err := renderToPath(ctx, path, layout.Page(props)); err != nil {
+		if err := renderToPath(ctx, path, template.Page(layout, props)); err != nil {
 			return fmt.Errorf("render pages: %w", err)
 		}
 	}
@@ -197,7 +197,7 @@ func renderPages(ctx context.Context, dir string, layout template.Layout, pages 
 	return nil
 }
 
-func renderPosts(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
+func renderPosts(ctx context.Context, dir string, layout template.LayoutFunc, posts Posts) error {
 	for _, post := range posts {
 		path := filepath.Join(dir, "posts", post.Slug+".html")
 
@@ -205,7 +205,7 @@ func renderPosts(ctx context.Context, dir string, layout template.Layout, posts 
 			Post: postToProps(post),
 		}
 
-		if err := renderToPath(ctx, path, layout.Post(props)); err != nil {
+		if err := renderToPath(ctx, path, template.Post(layout, props)); err != nil {
 			return fmt.Errorf("render posts: %w", err)
 		}
 	}
@@ -232,7 +232,7 @@ func renderRSS(ctx context.Context, dir string, cfg *Config, posts Posts) error 
 	return feed.Render(ctx, f)
 }
 
-func renderTags(ctx context.Context, dir string, layout template.Layout, posts Posts) error {
+func renderTags(ctx context.Context, dir string, layout template.LayoutFunc, posts Posts) error {
 	path := filepath.Join(dir, "tags.html")
 	postsByTag := posts.ByTag()
 
@@ -242,7 +242,7 @@ func renderTags(ctx context.Context, dir string, layout template.Layout, posts P
 		Prefix:   "/tags/",
 	}
 
-	if err := renderToPath(ctx, path, layout.PostIndex(props)); err != nil {
+	if err := renderToPath(ctx, path, template.PostIndex(layout, props)); err != nil {
 		return fmt.Errorf("render tags: %w", err)
 	}
 
@@ -254,7 +254,7 @@ func renderTags(ctx context.Context, dir string, layout template.Layout, posts P
 			Posts:   postsToProps(entry.Posts),
 		}
 
-		if err := renderToPath(ctx, path, layout.PostList(props)); err != nil {
+		if err := renderToPath(ctx, path, template.PostList(layout, props)); err != nil {
 			return fmt.Errorf("render tags: %w", err)
 		}
 	}

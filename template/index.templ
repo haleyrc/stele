@@ -7,8 +7,8 @@ type IndexProps struct {
 	RecentPosts components.PostListProps
 }
 
-templ (l Layout) Index(props IndexProps) {
-	@l.Layout("Home Page") {
+templ Index(layout LayoutFunc, props IndexProps) {
+	@layout("Home Page") {
 		if props.LatestPost != nil {
 			@components.Post(*props.LatestPost)
 		}

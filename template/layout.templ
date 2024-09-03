@@ -7,12 +7,26 @@ import (
 	"time"
 )
 
-type Layout struct {
-	Author      string
-	Copyright   string
-	Description string
-	Menu        []MenuLink
-	Title       string
+type LayoutFunc func(pageName string) templ.Component
+
+func DefaultLayout(title, description, author, copyright string, menu []MenuLink) LayoutFunc {
+	return func(pageName string) templ.Component {
+		return layout(title, description, author, copyright, menu, pageName)
+	}
+}
+
+templ layout(title, description, author, copyright string, menu []MenuLink, pageName string) {
+	<!DOCTYPE html>
+	<html lang="en-US">
+		@head(pageName, title, description)
+		<body>
+			@header(title, menu)
+			@main() {
+				{ children... }
+			}
+			@footer(copyright, author, menu)
+		</body>
+	</html>
 }
 
 type MenuLink struct {
@@ -109,20 +123,6 @@ templ header(title string, menu []MenuLink) {
 			</a>
 		</div>
 	</header>
-}
-
-templ (l Layout) Layout(pageName string) {
-	<!DOCTYPE html>
-	<html lang="en-US">
-		@head(pageName, l.Title, l.Description)
-		<body>
-			@header(l.Title, l.Menu)
-			@main() {
-				{ children... }
-			}
-			@footer(l.Copyright, l.Author, l.Menu)
-		</body>
-	</html>
 }
 
 templ main() {

@@ -6,8 +6,8 @@ type PostProps struct {
 	Post components.PostProps
 }
 
-templ (l Layout) Post(props PostProps) {
-	@l.Layout(props.Post.Title) {
+templ Post(layout LayoutFunc, props PostProps) {
+	@layout(props.Post.Title) {
 		@components.Post(props.Post)
 	}
 }

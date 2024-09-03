@@ -16,8 +16,8 @@ type PostIndexEntryProps struct {
 	Key   string
 }
 
-templ (l Layout) PostIndex(props PostIndexProps) {
-	@l.Layout(props.PageName) {
+templ PostIndex(layout LayoutFunc, props PostIndexProps) {
+	@layout(props.PageName) {
 		<ul>
 			for _, entry := range props.Entries {
 				<li>
