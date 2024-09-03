@@ -1,3 +1,5 @@
+// Package markdown contains thin wrappers around third-party markdown
+// implementations.
 package markdown
 
 import (
@@ -22,6 +24,8 @@ var defaultParser = goldmark.New(
 	),
 )
 
+// Parse reads the file at path and writes the converted markdown content to
+// w.
 func Parse(path string, w io.Writer) error {
 	contents, err := os.ReadFile(path)
 	if err != nil {
@@ -35,12 +39,14 @@ func Parse(path string, w io.Writer) error {
 	return nil
 }
 
+// Frontmatter represents all of the supported frontmatter fields for posts.
 type Frontmatter struct {
 	Description string   `yaml:"description"`
 	Tags        []string `yaml:"tags"`
 	Title       string   `yaml:"title"`
 }
 
+// ParseFrontmatter reads the file at path and returns the parsed frontmatter.
 func ParseFrontmatter(path string) (*Frontmatter, error) {
 	ctx := parser.NewContext()
 

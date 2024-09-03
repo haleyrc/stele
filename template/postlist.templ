@@ -7,6 +7,8 @@ type PostListProps struct {
 	Posts   components.PostListProps
 }
 
+// PostList renders a page containing a list of posts that share a common key
+// e.g. posts for a specific year or tag.
 templ PostList(layout LayoutFunc, props PostListProps) {
 	@layout(props.Heading) {
 		<h1 class="text-xl font-bold pb-2">

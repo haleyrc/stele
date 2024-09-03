@@ -1,9 +1,6 @@
 package template
 
-import (
-	"fmt"
-	"strconv"
-)
+import "strconv"
 
 type PostIndexProps struct {
 	PageName string
@@ -16,6 +13,8 @@ type PostIndexEntryProps struct {
 	Key   string
 }
 
+// PostIndex renders a page containing a list of posts bucketed by a shared key
+// e.g. an archive by year or listing by tag.
 templ PostIndex(layout LayoutFunc, props PostIndexProps) {
 	@layout(props.PageName) {
 		<ul>
@@ -28,9 +27,4 @@ templ PostIndex(layout LayoutFunc, props PostIndexProps) {
 			}
 		</ul>
 	}
-}
-
-func urlf(format string, args ...any) templ.SafeURL {
-	s := fmt.Sprintf(format, args...)
-	return templ.URL(s)
 }

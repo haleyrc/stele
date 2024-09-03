@@ -14,6 +14,9 @@ import (
 	"github.com/haleyrc/stele/template"
 )
 
+// Build compiles a deployable blog. Source files are read from srcDir and the
+// resulting assets are written to dstDir. The contents of the destination
+// directory, if any, will be deleted when running this function.
 func Build(ctx context.Context, srcDir, dstDir string) error {
 	start := time.Now()
 
@@ -170,14 +173,8 @@ func renderManifest(ctx context.Context, dir string, cfg *Config) error {
 	}
 	defer f.Close()
 
-	m, err := NewManifest(cfg)
-	if err != nil {
-		return err
-	}
-
 	log.Printf("Rendering %s...", path)
-
-	return m.Render(ctx, f)
+	return RenderManifest(ctx, f, cfg)
 }
 
 func renderPages(ctx context.Context, dir string, layout template.LayoutFunc, pages Pages) error {
@@ -222,14 +219,8 @@ func renderRSS(ctx context.Context, dir string, cfg *Config, posts Posts) error 
 	}
 	defer f.Close()
 
-	feed, err := NewFeed(cfg, posts)
-	if err != nil {
-		return err
-	}
-
 	log.Printf("Rendering %s...", path)
-
-	return feed.Render(ctx, f)
+	return RenderRSSFeed(ctx, f, cfg, posts)
 }
 
 func renderTags(ctx context.Context, dir string, layout template.LayoutFunc, posts Posts) error {

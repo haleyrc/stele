@@ -6,6 +6,7 @@ type PostProps struct {
 	Post components.PostProps
 }
 
+// Post renders a page for a single blog post.
 templ Post(layout LayoutFunc, props PostProps) {
 	@layout(props.Post.Title) {
 		@components.Post(props.Post)

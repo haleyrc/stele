@@ -15,15 +15,28 @@ import (
 	"github.com/haleyrc/stele/template/components"
 )
 
+// Post represents a single markdown post.
 type Post struct {
+	// A short description of the post.
 	Description string
-	Path        string
-	Slug        string
-	Tags        []string
-	Timestamp   time.Time
-	Title       string
+
+	// The path to the file on disk.
+	Path string
+
+	// A URL-safe identifier for the post.
+	Slug string
+
+	// A set of tags to associate with the post.
+	Tags []string
+
+	// The "authored date" for the post.
+	Timestamp time.Time
+
+	// The title of the post.
+	Title string
 }
 
+// NewPost returns a Post object by parsing the file at path.
 func NewPost(path string) (*Post, error) {
 	meta, err := markdown.ParseFrontmatter(path)
 	if err != nil {
@@ -47,6 +60,8 @@ func NewPost(path string) (*Post, error) {
 	return post, nil
 }
 
+// Content returns the content of the post. This is loaded lazily and this
+// method will panic if the file is unavailable or can't be read.
 func (p *Post) Content() string {
 	var buff bytes.Buffer
 	if err := markdown.Parse(p.Path, &buff); err != nil {
@@ -55,15 +70,22 @@ func (p *Post) Content() string {
 	return buff.String()
 }
 
+// PostIndex is a slice of entries where each entry contains a set of posts that
+// share a common key e.g. post year, tag, etc.
 type PostIndex []PostIndexEntry
 
+// PostIndexEntry represents a collection of posts that shared a common key e.g.
+// post year, tag, etc.
 type PostIndexEntry struct {
 	Key   string
 	Posts Posts
 }
 
+// Posts is an alias for a slice of Post objects.
 type Posts []Post
 
+// NewPosts returns a slice of Posts by parsing the contents of the provided
+// directory.
 func NewPosts(dir string) (Posts, error) {
 	files, err := filepath.Glob(filepath.Join(dir, "*.md"))
 	if err != nil {
@@ -91,6 +113,9 @@ func NewPosts(dir string) (Posts, error) {
 
 	return posts, nil
 }
+
+// ByTag returns an index of posts grouped by common tags. A post with multiple
+// tags will appear in multiple entries in the index.
 func (ps Posts) ByTag() PostIndex {
 	m := map[string]Posts{}
 	for _, post := range ps {
@@ -114,6 +139,8 @@ func (ps Posts) ByTag() PostIndex {
 	return idx
 }
 
+// ByYear returns an index of posts grouped by the year they were authored. A
+// given post will only appear in one entry in the index.
 func (ps Posts) ByYear() PostIndex {
 	m := map[string]Posts{}
 	for _, post := range ps {
@@ -136,6 +163,8 @@ func (ps Posts) ByYear() PostIndex {
 	return idx
 }
 
+// First returns the earliest post by authored date. This method assumes that
+// the posts are sorted in descending order by timestamp.
 func (ps Posts) First() *Post {
 	if len(ps) == 0 {
 		return nil
@@ -143,6 +172,9 @@ func (ps Posts) First() *Post {
 	return &ps[len(ps)-1]
 }
 
+// Head returns the first posts in the slice and a Posts object containing the
+// remaining posts. If there is only one post, the second return value will be
+// nil. If there are no posts, both return values will be nil.
 func (ps Posts) Head() (*Post, Posts) {
 	if len(ps) == 0 {
 		return nil, nil
@@ -153,6 +185,8 @@ func (ps Posts) Head() (*Post, Posts) {
 	return &ps[0], ps[1:]
 }
 
+// MostRecent returns the n most recent posts. If n > len(ps), it will return
+// all of the posts.
 func (ps Posts) MostRecent(n int) Posts {
 	if len(ps) < n {
 		n = len(ps)

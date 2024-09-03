@@ -5,6 +5,7 @@ type PageProps struct {
 	Slug    string
 }
 
+// Page renders a page containing static HTML content.
 templ Page(layout LayoutFunc, props PageProps) {
 	@layout(props.Slug) {
 		@templ.Raw(props.Content)

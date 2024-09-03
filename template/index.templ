@@ -7,6 +7,7 @@ type IndexProps struct {
 	RecentPosts components.PostListProps
 }
 
+// Index renders the "home" page.
 templ Index(layout LayoutFunc, props IndexProps) {
 	@layout("Home Page") {
 		if props.LatestPost != nil {
