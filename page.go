@@ -35,18 +35,15 @@ func (p Page) Content() string {
 	return string(contents)
 }
 
-// Pages is an alias for a slice of Page objects.
-type Pages []Page
-
 // NewPages returns a slice of Pages by parsing the contents of the provided
 // directory.
-func NewPages(dir string) (Pages, error) {
+func NewPages(dir string) ([]Page, error) {
 	files, err := filepath.Glob(filepath.Join(dir, "*.html"))
 	if err != nil {
 		return nil, fmt.Errorf("blog: new pages: %w", err)
 	}
 
-	pages := make(Pages, 0, len(files))
+	pages := make([]Page, 0, len(files))
 	for _, file := range files {
 		page, err := NewPage(file)
 		if err != nil {

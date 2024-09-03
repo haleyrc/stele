@@ -177,7 +177,7 @@ func renderManifest(ctx context.Context, dir string, cfg *Config) error {
 	return RenderManifest(ctx, f, cfg)
 }
 
-func renderPages(ctx context.Context, dir string, layout template.LayoutFunc, pages Pages) error {
+func renderPages(ctx context.Context, dir string, layout template.LayoutFunc, pages []Page) error {
 	for _, page := range pages {
 		path := filepath.Join(dir, page.Slug+".html")
 
