@@ -7,6 +7,8 @@ import (
 	"io"
 )
 
+// RenderManifest renders a web manifest to w based on the configuration
+// provided.
 func RenderManifest(ctx context.Context, w io.Writer, cfg *Config) error {
 	m, err := newManifest(cfg)
 	if err != nil {
