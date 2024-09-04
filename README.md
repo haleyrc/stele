@@ -73,16 +73,36 @@ The `stele` CLI relies on a specific file structure to work correctly:
 
 At the root of your project you will need a YAML file containing the configuration for your blog. The available configuration values are:
 
-|name|description|example|
-|----|-----------|-------|
-|`title`|The name of your blog|`title: My First Blog`|
-|`description`|A short description of your blog's content/purpose|`description: A personal blog about fish`|
-|`author`|Probably your name|`author: Grace Hopper`|
-|`baseURL`|The FQDN and protocol for your blog|`baseURL: https://myblog.example.com`|
-|`categories`|A list of categories that describe the content of the blog|`categories: [blog, programming]`|
-|`menu`|A list of links to include in the top-level site navigation|`menu:
-  - label: about
-    path: /about`|
+* `title` - The name of your blog
+  ```
+  title: My First Blog
+  ```
+* `description` - A short description of your blog's content/purpose
+  ```
+  description: A personal blog about fish
+  ```
+* `author` - Probably your name
+  ```
+  author: Grace Hopper
+  ```
+* `baseURL` - The FQDN and protocol for your blog
+  ```
+  baseURL: https://myblog.example.com
+  ```
+* `categories` - A list of categories that describe the content of the blog
+  ```
+  categories:
+    - blog
+    - programming
+  ```
+  > This can also be written in short-form: `categories: [blog, programming]`.
+* `menu` - A list of links to include in the top-level site navigation
+  ```
+  menu:
+    - label: about
+      path: /about
+  ```
+  > The `path` should correspond to a static page e.g. `pages/about.html` or the link will be dead when the site is generated.
 
 ### `pages/`
 
