@@ -106,7 +106,33 @@ At the root of your project you will need a YAML file containing the configurati
 
 ### `pages/`
 
+"Pages" are static content written in HTML that require no additional parsing. These are primarily useful for things like "About Me" and "Contact" pages that are generally authored once and only infrequently updated.
+
+`stele` will look for any files in the `pages/` subdirectory with an `.html` extension and render them into the default layout. The resulting file will have the same name as the original but will be in the root of the rendered static assets. For example, the file `/pages/about.html` will be available at `{{ BASE_URL }}/about.html`. For this reason, make sure that your file names are URL-safe.
+
 ### `posts/`
+
+Posts in `stele`, as with most SSGs, are written in markdown with some minimal frontmatter.
+
+`stele` will look for any files in the `posts/` subdirectory with a `.md` extension and do some processing based on the file name and frontmatter. Posts should be named following the format `YYYYMMDD-post-name-here.md` where `YYYYMMDD` is the "authored" date of the post and `post-name-here` is a descriptive name for the post. As with pages, the post name should be URL-safe as it will be converted in to a slug for the post in the final assets.
+
+The post content should follow the format:
+
+```markdown
+---
+title: Your Title Here
+description: Your description here.
+tags: [tag1, tag2]
+---
+
+Your content here.
+```
+
+The `title` and `description` fields are required. If `tags` is not present, the post will simply not have any tags assigned.
+
+---
+
+That's really all you need to get started. Everything else is handled by the framework!
 
 ## Alternatives
 
