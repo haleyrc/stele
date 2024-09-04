@@ -38,27 +38,13 @@ go install github.com/haleyrc/stele
 
 ## Usage
 
-Assuming `stele` is already installed and in your path, using the CLI is pretty
-straightforward. Running
+Assuming `stele` is already installed and in your path, using the CLI is pretty straightforward. Running `stele dev` will start up a local development server. This does a full build of the static assets and makes them available at http://localhost:8081. At the moment, the site will not automatically rebuild on changes, but you can visit http://localhost:8081/refresh to force a rebuild.
 
-```
-stele dev
-```
-
-will start up a local development server. This does a full build of the static assets and makes them available at `http://localhost:8081`. At the moment, the site will not automatically rebuild on changes, but you can visit `http://localhost:8081/refresh` to force a rebuild.
-
-Once you are satisfied with your post/page/whatever, you can do a full build by running
-
-```
-stele build
-```
-.
-
-This will create a `dist/` folder with all of the static assets for the site. These assets should be deployable as-is to something like an S3 bucket or you can have your favorite host (e.g. Cloudflare Pages, Netlify, etc.) build and deploy them for you. How to set that up is outside of the scope of this guide, but shouldn't be too difficult for someone with experience on these platforms.
+Once you are satisfied with your post/page/whatever, you can do a full build by running `stele build`. This will create a `dist/` folder with all of the static assets for the site. These assets should be deployable as-is to something like an S3 bucket or you can have your favorite host (e.g. Cloudflare Pages, Netlify, etc.) build and deploy them for you. How to set that up is outside of the scope of this guide, but shouldn't be too difficult for someone with experience on these platforms.
 
 For either of these commands to work correctly, you will need to make sure that your source directory is laid out in the standard `stele` format.
 
-### File structure
+## File structure
 
 The `stele` CLI relies on a specific file structure to work correctly:
 
