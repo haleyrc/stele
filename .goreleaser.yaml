@@ -36,6 +36,6 @@ changelog:
       - "^chore:"
 
 upx:
-  - enabled: false
+  - enabled: true
     compress: best
     brute: true
