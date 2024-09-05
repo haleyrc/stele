@@ -100,7 +100,7 @@ func runDev(ctx context.Context) {
 	}
 }
 
-const (
+var (
 	commit  = ""
 	date    = ""
 	version = ""
