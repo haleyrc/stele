@@ -53,7 +53,7 @@ func ParseFrontmatter(path string, fm any) error {
 		return fmt.Errorf("markdown: parse frontmatter: %w", err)
 	}
 
-	if err := frontmatter.Get(ctx).Decode(&fm); err != nil {
+	if err := frontmatter.Get(ctx).Decode(fm); err != nil {
 		return fmt.Errorf("markdown: parse frontmatter: %w", err)
 	}
 
