@@ -33,6 +33,7 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+      - "^chore:"
 
 upx:
   - enabled: false
