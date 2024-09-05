@@ -95,7 +95,7 @@ USAGE
   stele COMMAND
 
 COMMANDS
-  build: Create a set of deployable assets
-  dev:   Run a local server for previewing content
-  help:  Print this help message
+  build    Create a set of deployable assets
+  dev      Run a local server for previewing content
+  help     Print this help message
 `
