@@ -49,7 +49,7 @@ func printUsage() {
 }
 
 func printVersion() {
-	fmt.Fprint(os.Stderr, logo)
+	fmt.Fprint(os.Stderr, strings.TrimPrefix(logo, "\n"))
 	fmt.Fprintln(os.Stderr, "stele: A no frills blogging platform for people with analysis paralysis")
 	fmt.Fprintln(os.Stderr)
 	fmt.Fprintln(os.Stderr, "Commit: ", commit)
