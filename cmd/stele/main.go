@@ -26,6 +26,9 @@ func main() {
 		runBuild(ctx)
 	case "dev":
 		runDev(ctx)
+	case "help":
+		printUsage()
+		os.Exit(0)
 	default:
 		printUsage()
 		os.Exit(1)
@@ -94,4 +97,5 @@ USAGE
 COMMANDS
   build: Create a set of deployable assets
   dev:   Run a local server for previewing content
+  help:  Print this help message
 `
