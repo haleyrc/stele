@@ -12,12 +12,6 @@ import (
 	"github.com/haleyrc/stele"
 )
 
-const (
-	commit  = ""
-	date    = ""
-	version = ""
-)
-
 func main() {
 	ctx := context.Background()
 
@@ -42,6 +36,11 @@ func main() {
 		printUsage()
 		os.Exit(1)
 	}
+}
+
+func exitWithError(err error) {
+	log.Println("ERR:", err)
+	os.Exit(1)
 }
 
 func printUsage() {
@@ -101,10 +100,11 @@ func runDev(ctx context.Context) {
 	}
 }
 
-func exitWithError(err error) {
-	log.Println("ERR:", err)
-	os.Exit(1)
-}
+const (
+	commit  = ""
+	date    = ""
+	version = ""
+)
 
 const logo = `
      _       _
