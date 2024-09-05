@@ -1,0 +1,13 @@
+package pages
+
+type PageProps struct {
+	Content string
+	Slug    string
+}
+
+// Page renders a page containing static HTML content.
+templ Page(layout LayoutFunc, props PageProps) {
+	@layout(props.Slug) {
+		@templ.Raw(props.Content)
+	}
+}

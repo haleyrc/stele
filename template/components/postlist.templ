@@ -1,0 +1,45 @@
+package components
+
+import (
+	"fmt"
+	"time"
+)
+
+type PostListProps struct {
+	Posts []PostListEntryProps
+}
+
+// PostList renders a list of posts.
+templ PostList(props PostListProps) {
+	<table>
+		<tbody>
+			for _, post := range props.Posts {
+				@postListEntry(post)
+			}
+		</tbody>
+	</table>
+}
+
+type PostListEntryProps struct {
+	Slug      string
+	Timestamp time.Time
+	Title     string
+}
+
+templ postListEntry(props PostListEntryProps) {
+	<tr>
+		<td class="pr-4">
+			{ props.Timestamp.Format("2006-01-02") }:
+		</td>
+		<td>
+			<a class="hover:underline" href={ urlf("/posts/" + props.Slug) }>
+				{ props.Title }
+			</a>
+		</td>
+	</tr>
+}
+
+func urlf(format string, args ...any) templ.SafeURL {
+	s := fmt.Sprintf(format, args...)
+	return templ.URL(s)
+}
