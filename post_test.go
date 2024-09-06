@@ -9,19 +9,49 @@ import (
 )
 
 func TestNewPost(t *testing.T) {
-	path := filepath.Join("testdata", "posts", "20220103-first-post.md")
-	post, err := stele.NewPost(path)
-	if err != nil {
-		t.Fatal(err)
+	testcases := []struct {
+		filename    string
+		title       string
+		description string
+		tags        []string
+	}{
+		{
+			filename:    "20220103-first-post.md",
+			title:       "First Post",
+			description: "The first post",
+			tags:        []string{"go", "react"},
+		},
+		{
+			filename:    "20240406-second-post.md",
+			title:       "Second Post",
+			description: "The second post",
+			tags:        []string{"go", "react"},
+		},
+		{
+			filename:    "20240406-third-post.md",
+			title:       "Third Post",
+			description: "The third post",
+			tags:        []string{"go", "react"},
+		},
 	}
 
-	if want := "First Post"; post.Title != want {
-		t.Errorf("expected post.Title = %q, but it was %q", want, post.Title)
-	}
-	if want := "The first post"; post.Description != want {
-		t.Errorf("expected post.Description = %q, but it was %q", want, post.Description)
-	}
-	if want := []string{"go", "react"}; !slices.Equal(want, post.Tags) {
-		t.Errorf("expected post.Tags = %v, but it was %v", want, post.Tags)
+	for _, tc := range testcases {
+		t.Run(tc.filename, func(t *testing.T) {
+			path := filepath.Join("testdata", "posts", tc.filename)
+			post, err := stele.NewPost(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if post.Title != tc.title {
+				t.Errorf("expected post.Title = %q, but it was %q", tc.title, post.Title)
+			}
+			if post.Description != tc.description {
+				t.Errorf("expected post.Description = %q, but it was %q", tc.description, post.Description)
+			}
+			if !slices.Equal(tc.tags, post.Tags) {
+				t.Errorf("expected post.Tags = %v, but it was %v", tc.tags, post.Tags)
+			}
+		})
 	}
 }
