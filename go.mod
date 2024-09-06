@@ -13,6 +13,9 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
+	github.com/a-h/htmlformat v0.0.0-20231108124658-5bd994fe268e // indirect
 	github.com/bluele/gcache v0.0.2 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/lithdew/quickjs v0.0.0-20200714182134-aaa42285c9d2 // indirect
+	golang.org/x/net v0.24.0 // indirect
 )
