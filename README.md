@@ -109,12 +109,13 @@ The post content should follow the format:
 title: Your Title Here
 description: Your description here.
 tags: [tag1, tag2]
+draft: false
 ---
 
 Your content here.
 ```
 
-The `title` and `description` fields are required. If `tags` is not present, the post will simply not have any tags assigned.
+The `title` and `description` fields are required. If `tags` is not present, the post will simply not have any tags assigned. Finally, if `draft` is `true`, the post will be rendered in the local development server but will not be present in the production build.
 
 ---
 
