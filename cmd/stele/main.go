@@ -64,7 +64,7 @@ func runBuild(ctx context.Context) {
 }
 
 func runDev(ctx context.Context) {
-	if err := stele.Build(ctx, ".", "build"); err != nil {
+	if err := stele.Build(ctx, ".", "build", stele.WithDrafts); err != nil {
 		exitWithError(err)
 	}
 
