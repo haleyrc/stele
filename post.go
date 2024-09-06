@@ -20,6 +20,10 @@ type Frontmatter struct {
 	// A short description of the post.
 	Description string `yaml:"description"`
 
+	// Drafts are visible when running the local server, but are not included in
+	// production builds.
+	Draft bool `yaml:"draft"`
+
 	// A list of tags to associate with the post.
 	Tags []string `yaml:"tags"`
 

@@ -14,24 +14,28 @@ func TestNewPost(t *testing.T) {
 		title       string
 		description string
 		tags        []string
+		draft       bool
 	}{
 		{
 			filename:    "20220103-first-post.md",
 			title:       "First Post",
 			description: "The first post",
 			tags:        []string{"go", "react"},
+			draft:       false,
 		},
 		{
 			filename:    "20240406-second-post.md",
 			title:       "Second Post",
 			description: "The second post",
 			tags:        []string{"go", "react"},
+			draft:       false,
 		},
 		{
 			filename:    "20240406-third-post.md",
 			title:       "Third Post",
 			description: "The third post",
 			tags:        []string{"go", "react"},
+			draft:       true,
 		},
 	}
 
@@ -51,6 +55,9 @@ func TestNewPost(t *testing.T) {
 			}
 			if !slices.Equal(tc.tags, post.Tags) {
 				t.Errorf("expected post.Tags = %v, but it was %v", tc.tags, post.Tags)
+			}
+			if post.Draft != tc.draft {
+				t.Errorf("expected post.Draft = %t, but it was %t", tc.draft, post.Draft)
 			}
 		})
 	}
