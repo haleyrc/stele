@@ -197,12 +197,14 @@ func renderPages(ctx context.Context, dir string, layout pages.LayoutFunc, ps []
 
 func renderPosts(ctx context.Context, dir string, layout pages.LayoutFunc, posts Posts) error {
 	for _, post := range posts {
-		path := filepath.Join(dir, "posts", post.Slug+".html")
+		if post.Draft {
+			continue
+		}
 
+		path := filepath.Join(dir, "posts", post.Slug+".html")
 		props := pages.PostProps{
 			Post: postToProps(post),
 		}
-
 		if err := renderToPath(ctx, path, pages.Post(layout, props)); err != nil {
 			return fmt.Errorf("render posts: %w", err)
 		}
