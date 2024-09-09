@@ -6,10 +6,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
+	"os/signal"
 	"strings"
 
 	"github.com/haleyrc/stele"
+	"github.com/haleyrc/stele/internal/server"
 )
 
 func main() {
@@ -64,12 +65,23 @@ func runBuild(ctx context.Context) {
 }
 
 func runDev(ctx context.Context) {
-	if err := stele.Build(ctx, ".", "build"); err != nil {
+	dir, err := os.MkdirTemp("", "stele")
+	if err != nil {
+		exitWithError(err)
+	}
+	defer func() {
+		if err := os.RemoveAll(dir); err != nil {
+			log.Println("could not clean up temp directory:", err)
+		}
+	}()
+
+	if err := stele.Build(ctx, ".", dir); err != nil {
 		exitWithError(err)
 	}
 
-	http.HandleFunc("GET /refresh", func(w http.ResponseWriter, r *http.Request) {
-		if err := stele.Build(ctx, ".", "build"); err != nil {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /refresh", func(w http.ResponseWriter, r *http.Request) {
+		if err := stele.Build(ctx, ".", dir); err != nil {
 			log.Println("ERR:", err)
 			http.Error(w, "Rebuild failed", http.StatusInternalServerError)
 			return
@@ -78,8 +90,8 @@ func runDev(ctx context.Context) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
-	buildDir := os.DirFS(filepath.Join(".", "build"))
-	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+	buildDir := os.DirFS(dir)
+	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		var fn string
 		switch r.URL.Path {
 		case "/":
@@ -93,8 +105,13 @@ func runDev(ctx context.Context) {
 		http.ServeFileFS(w, r, buildDir, fn)
 	})
 
+	server := server.New("8081", mux)
+
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
+
 	log.Println("Listening on http://localhost:8081")
-	if err := http.ListenAndServe(":8081", nil); err != nil {
+	if err := server.ListenAndServe(ctx); err != nil {
 		log.Println("ERR:", err)
 		os.Exit(1)
 	}
