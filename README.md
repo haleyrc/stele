@@ -100,7 +100,7 @@ At the root of your project you will need a YAML file containing the configurati
 
 Posts in `stele`, as with most SSGs, are written in markdown with some minimal frontmatter.
 
-`stele` will look for any files in the `posts/` subdirectory with a `.md` extension and do some processing based on the file name and frontmatter. Posts should be named following the format `YYYYMMDD-post-name-here.md` where `YYYYMMDD` is the "authored" date of the post and `post-name-here` is a descriptive name for the post. As with pages, the post name should be URL-safe as it will be converted in to a slug for the post in the final assets.
+`stele` will load and parse any files in the `posts/` subdirectory with a `.md` extension. As with pages, the post name should be URL-safe as it will be converted in to a slug for the post in the final assets.
 
 The post content should follow the format:
 
@@ -110,12 +110,13 @@ title: Your Title Here
 description: Your description here.
 tags: [tag1, tag2]
 draft: false
+date: YYYY-MM-DD
 ---
 
 Your content here.
 ```
 
-The `title` and `description` fields are required. If `tags` is not present, the post will simply not have any tags assigned. Finally, if `draft` is `true`, the post will be rendered in the local development server but will not be present in the production build.
+The `title` and `description` fields are required. If `tags` is not present, the post will simply not have any tags assigned. The `draft` field determines whether the post should be published. If `true`, the post will be rendered in the local development server but will not be present in the production build. Posts must also have a date with one exception: drafts must not have a date assigned. When running the development server, drafts are automatically assigned today's date so that they remain at the top of the rendered list of posts. Once a post is no longer a draft (by setting `draft: false` or removing the field entirely), they will need to have a publish date assigned.
 
 ---
 
