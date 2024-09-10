@@ -19,7 +19,7 @@ func TestNewPost(t *testing.T) {
 		timestamp   time.Time
 	}{
 		{
-			filename:    "20220103-first-post.md",
+			filename:    "first-post.md",
 			title:       "First Post",
 			description: "The first post",
 			tags:        []string{"go", "react"},
@@ -27,7 +27,7 @@ func TestNewPost(t *testing.T) {
 			timestamp:   time.Date(2022, 1, 3, 0, 0, 0, 0, time.UTC),
 		},
 		{
-			filename:    "20240406-second-post.md",
+			filename:    "second-post.md",
 			title:       "Second Post",
 			description: "The second post",
 			tags:        []string{"go", "react"},
@@ -35,12 +35,12 @@ func TestNewPost(t *testing.T) {
 			timestamp:   time.Date(2024, 4, 6, 0, 0, 0, 0, time.UTC),
 		},
 		{
-			filename:    "20240406-third-post.md",
+			filename:    "third-post.md",
 			title:       "Third Post",
 			description: "The third post",
 			tags:        []string{"go", "react"},
 			draft:       true,
-			timestamp:   time.Date(2024, 4, 6, 0, 0, 0, 0, time.UTC),
+			timestamp:   time.Now().UTC(),
 		},
 	}
 
@@ -64,9 +64,15 @@ func TestNewPost(t *testing.T) {
 			if post.Draft != tc.draft {
 				t.Errorf("expected post.Draft = %t, but it was %t", tc.draft, post.Draft)
 			}
-			if !post.Timestamp.Equal(tc.timestamp) {
+			if !dateEqual(tc.timestamp, post.Timestamp) {
 				t.Errorf("expected post.Timestamp = %s, but it was %s", tc.timestamp, post.Timestamp)
 			}
 		})
 	}
+}
+
+func dateEqual(want, got time.Time) bool {
+	wantYear, wantMonth, wantDay := want.Date()
+	gotYear, gotMonth, gotDay := got.Date()
+	return wantYear == gotYear && wantMonth == gotMonth && wantDay == gotDay
 }
