@@ -20,8 +20,15 @@ type Frontmatter struct {
 	// A short description of the post.
 	Description string `yaml:"description"`
 
+	// Drafts are visible when running the local server, but are not included in
+	// production builds.
+	Draft bool `yaml:"draft"`
+
 	// A list of tags to associate with the post.
 	Tags []string `yaml:"tags"`
+
+	// The "authored date" for the post.
+	Timestamp time.Time `yaml:"date"`
 
 	// The title of the post.
 	Title string `yaml:"title"`
@@ -36,9 +43,6 @@ type Post struct {
 
 	// A URL-safe identifier for the post.
 	Slug string
-
-	// The "authored date" for the post.
-	Timestamp time.Time
 }
 
 // NewPost returns a Post object by parsing the file at path.
@@ -48,16 +52,30 @@ func NewPost(path string) (*Post, error) {
 		return nil, fmt.Errorf("blog: new post: %w", err)
 	}
 
-	slug, timestamp, err := parsePostPath(path)
-	if err != nil {
-		return nil, fmt.Errorf("blog: load posts: %w", err)
+	if meta.Title == "" {
+		return nil, fmt.Errorf("stele: new post: posts must have a title")
+	}
+
+	if meta.Description == "" {
+		return nil, fmt.Errorf("stele: new post: posts must have a description")
+	}
+
+	if meta.Draft {
+		if !meta.Timestamp.IsZero() {
+			return nil, fmt.Errorf("stele: new post: drafts can not have a date")
+		}
+		now := time.Now()
+		meta.Timestamp = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+	}
+
+	if meta.Timestamp.IsZero() {
+		return nil, fmt.Errorf("stele: new post: posts must have a timestamp")
 	}
 
 	post := &Post{
 		Frontmatter: meta,
 		Path:        path,
-		Slug:        slug,
-		Timestamp:   timestamp,
+		Slug:        strings.TrimSuffix(filepath.Base(path), ".md"),
 	}
 
 	return post, nil
@@ -195,18 +213,6 @@ func (ps Posts) MostRecent(n int) Posts {
 		n = len(ps)
 	}
 	return ps[:n]
-}
-
-func parsePostPath(filename string) (string, time.Time, error) {
-	name := strings.TrimSuffix(filepath.Base(filename), ".md")
-	nameParts := strings.SplitN(name, "-", 2)
-
-	ts, err := time.Parse("20060102", nameParts[0])
-	if err != nil {
-		return "", time.Time{}, fmt.Errorf("parse post name: %w", err)
-	}
-
-	return nameParts[1], ts, nil
 }
 
 func postToProps(p Post) components.PostProps {

@@ -75,7 +75,7 @@ func runDev(ctx context.Context) {
 		}
 	}()
 
-	if err := stele.Build(ctx, ".", dir); err != nil {
+	if err := stele.Build(ctx, ".", dir, stele.WithDrafts); err != nil {
 		exitWithError(err)
 	}
 

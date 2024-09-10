@@ -15,11 +15,28 @@ import (
 	"github.com/haleyrc/stele/template/pages"
 )
 
+type buildConfig struct {
+	drafts bool
+}
+
+type BuildOpt func(*buildConfig)
+
+func WithDrafts(cfg *buildConfig) {
+	cfg.drafts = true
+}
+
 // Build compiles a deployable blog. Source files are read from srcDir and the
 // resulting assets are written to dstDir. The contents of the destination
 // directory, if any, will be deleted when running this function.
-func Build(ctx context.Context, srcDir, dstDir string) error {
+func Build(ctx context.Context, srcDir, dstDir string, opts ...BuildOpt) error {
 	start := time.Now()
+
+	buildCfg := buildConfig{
+		drafts: false,
+	}
+	for _, opt := range opts {
+		opt(&buildCfg)
+	}
 
 	log.Println("Loading configuration...")
 	cfg, err := NewConfig(filepath.Join(srcDir, "config.yml"))
@@ -65,7 +82,7 @@ func Build(ctx context.Context, srcDir, dstDir string) error {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 
-	if err := renderPosts(ctx, dstDir, layout, posts); err != nil {
+	if err := renderPosts(ctx, dstDir, layout, posts, buildCfg.drafts); err != nil {
 		return fmt.Errorf("stele: build: %w", err)
 	}
 
@@ -195,14 +212,16 @@ func renderPages(ctx context.Context, dir string, layout pages.LayoutFunc, ps []
 	return nil
 }
 
-func renderPosts(ctx context.Context, dir string, layout pages.LayoutFunc, posts Posts) error {
+func renderPosts(ctx context.Context, dir string, layout pages.LayoutFunc, posts Posts, renderDrafts bool) error {
 	for _, post := range posts {
-		path := filepath.Join(dir, "posts", post.Slug+".html")
+		if post.Draft && !renderDrafts {
+			continue
+		}
 
+		path := filepath.Join(dir, "posts", post.Slug+".html")
 		props := pages.PostProps{
 			Post: postToProps(post),
 		}
-
 		if err := renderToPath(ctx, path, pages.Post(layout, props)); err != nil {
 			return fmt.Errorf("render posts: %w", err)
 		}
