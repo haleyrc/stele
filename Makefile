@@ -18,7 +18,7 @@ cleanall: clean
 fmt:
 	@templ fmt .
 
-install:
+install: all
 	go install ./cmd/stele
 
 generate:
