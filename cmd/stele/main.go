@@ -9,8 +9,9 @@ import (
 	"os/signal"
 	"strings"
 
+	"github.com/haleyrc/lib/server"
+
 	"github.com/haleyrc/stele"
-	"github.com/haleyrc/stele/internal/server"
 )
 
 func main() {
