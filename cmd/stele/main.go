@@ -9,8 +9,7 @@ import (
 	"os/signal"
 	"strings"
 
-	"github.com/haleyrc/lib/server"
-
+	"github.com/haleyrc/server"
 	"github.com/haleyrc/stele"
 )
 
