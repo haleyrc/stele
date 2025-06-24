@@ -1,8 +1,6 @@
 module github.com/haleyrc/stele
 
-go 1.23.1
-
-toolchain go1.24.0
+go 1.24
 
 require (
 	github.com/FurqanSoftware/goldmark-katex v0.0.0-20230820031700-1c400212c1e1
