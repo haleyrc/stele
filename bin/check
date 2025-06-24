@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -euo pipefail
+
+echo "[ bin/check ] Checking dependencies"
+go mod tidy
+
+echo "[ bin/check ] Building"
+go build -v -o /dev/null ./...
+
+echo "[ bin/check ] Running tests"
+go test -v -count=1 -shuffle=on ./...
