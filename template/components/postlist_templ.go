@@ -102,9 +102,9 @@ func postListEntry(props PostListEntryProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 templ.SafeURL
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinURLErrs(urlf("/posts/" + props.Slug))
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinURLErrs(urlf("/posts/%s", props.Slug))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/components/postlist.templ`, Line: 35, Col: 65}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/components/postlist.templ`, Line: 35, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {

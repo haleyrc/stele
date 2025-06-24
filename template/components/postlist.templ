@@ -32,7 +32,7 @@ templ postListEntry(props PostListEntryProps) {
 			{ props.Timestamp.Format("2006-01-02") }:
 		</td>
 		<td>
-			<a class="hover:underline" href={ urlf("/posts/" + props.Slug) }>
+			<a class="hover:underline" href={ urlf("/posts/%s", props.Slug) }>
 				{ props.Title }
 			</a>
 		</td>

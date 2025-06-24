@@ -47,9 +47,9 @@ func Post(props PostProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 templ.SafeURL
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinURLErrs(urlf("/posts/" + props.Slug))
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinURLErrs(urlf("/posts/%s", props.Slug))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/components/post.templ`, Line: 19, Col: 65}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/components/post.templ`, Line: 19, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -109,9 +109,9 @@ func Post(props PostProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var7 templ.SafeURL
-			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(urlf("/tags/" + tag))
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(urlf("/tags/%s", tag))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/components/post.templ`, Line: 28, Col: 58}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/components/post.templ`, Line: 28, Col: 59}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {

@@ -66,9 +66,9 @@ func PostIndex(layout LayoutFunc, props PostIndexProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var3 templ.SafeURL
-				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(urlf(props.Prefix + entry.Key))
+				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(urlf("%s%s", props.Prefix, entry.Key))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/pages/postindex.templ`, Line: 23, Col: 69}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `template/pages/postindex.templ`, Line: 23, Col: 76}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {

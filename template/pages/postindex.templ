@@ -20,7 +20,7 @@ templ PostIndex(layout LayoutFunc, props PostIndexProps) {
 		<ul>
 			for _, entry := range props.Entries {
 				<li>
-					<a class="hover:underline" href={ urlf(props.Prefix + entry.Key) }>
+					<a class="hover:underline" href={ urlf("%s%s", props.Prefix, entry.Key) }>
 						{ entry.Key } ({ strconv.Itoa(entry.Count) })
 					</a>
 				</li>

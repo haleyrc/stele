@@ -16,7 +16,7 @@ type PostProps struct {
 templ Post(props PostProps) {
 	<article class="text-justify">
 		<h1 class="text-2xl font-light">
-			<a class="hover:underline" href={ urlf("/posts/" + props.Slug) }>
+			<a class="hover:underline" href={ urlf("/posts/%s", props.Slug) }>
 				{ props.Title }
 			</a>
 		</h1>
@@ -25,7 +25,7 @@ templ Post(props PostProps) {
 		</div>
 		<div class="flex gap-x-2 pb-4">
 			for _, tag := range props.Tags {
-				<a class={ tagLinkStyles } href={ urlf("/tags/" + tag) }>
+				<a class={ tagLinkStyles } href={ urlf("/tags/%s", tag) }>
 					{ tag }
 				</a>
 			}
