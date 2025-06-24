@@ -1,0 +1,11 @@
+package pages
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/template/components"
+)
+
+// Note renders a page for a single note.
+templ Note(note site.Note) {
+	@components.Note(note)
+}

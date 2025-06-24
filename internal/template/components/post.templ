@@ -1,0 +1,42 @@
+package components
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/templx"
+)
+
+const tagLinkStyles = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 hover:underline"
+
+// Post renders a single post with optional series navigation.
+templ Post(post *site.Post, seriesInfo *site.SeriesPostInfo) {
+	<article class="text-justify">
+		<h1 class="text-2xl font-light">
+			<a class="hover:underline" href={ templx.URLf("/posts/%s", post.Slug) }>
+				if post.Series != nil {
+					@SeriesPostTitle(post)
+				} else {
+					{ post.Frontmatter.Title }
+				}
+			</a>
+		</h1>
+		<div class="text-xs font-extralight pb-1">
+			{ post.Frontmatter.Timestamp.Format("January 2, 2006") }
+		</div>
+		<div class="flex gap-x-2 pb-4">
+			for _, tag := range post.Frontmatter.Tags {
+				<a class={ tagLinkStyles } href={ templx.URLf("/tags/%s", tag) }>
+					{ tag }
+				</a>
+			}
+		</div>
+		if post.Frontmatter.Draft {
+			@DraftBanner()
+		}
+		if seriesInfo != nil {
+			@SeriesNav(*seriesInfo)
+		}
+		<div class="markdown">
+			@templ.Raw(post.Content)
+		</div>
+	</article>
+}

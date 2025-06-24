@@ -1,0 +1,29 @@
+package components
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/template/components/icons"
+	"github.com/haleyrc/stele/internal/templx"
+)
+
+// NoteList renders a list of notes.
+templ NoteList(notes site.Notes) {
+	<ul>
+		for _, note := range notes {
+			@noteListEntry(note)
+		}
+	</ul>
+}
+
+templ noteListEntry(note *site.Note) {
+	<li>
+		if note.Frontmatter.Pinned {
+			<span class="inline-flex items-center mr-1 text-gray-500" title="Pinned note">
+				@icons.Pin(3)
+			</span>
+		}
+		<a class="hover:underline" href={ templx.URLf("/notes/%s", note.Slug) }>
+			{ note.Frontmatter.Title }
+		</a>
+	</li>
+}

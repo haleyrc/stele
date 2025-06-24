@@ -2,10 +2,10 @@ version: 2
 
 before:
   hooks:
-    - make
+    - ./bin/check
 
 builds:
-  - main: ./cmd/stele
+  - main: .
     env:
       - CGO_ENABLED=1
     flags:

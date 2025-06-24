@@ -1,0 +1,27 @@
+package components
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/templx"
+)
+
+// Note renders a single note.
+templ Note(note site.Note) {
+	<article class="text-justify">
+		<h1 class="text-2xl font-light">
+			<a class="hover:underline" href={ templx.URLf("/notes/%s", note.Slug) }>
+				{ note.Frontmatter.Title }
+			</a>
+		</h1>
+		<div class="flex gap-x-2 pb-4">
+			for _, tag := range note.Frontmatter.Tags {
+				<a class={ tagLinkStyles } href={ templx.URLf("/notes/tags/%s", tag) }>
+					{ tag }
+				</a>
+			}
+		</div>
+		<div class="markdown">
+			@templ.Raw(note.Content)
+		</div>
+	</article>
+}

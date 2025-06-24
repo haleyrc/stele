@@ -1,21 +1,102 @@
 #!/bin/bash
 
-set -euo pipefail
+echo "[ bin/check ] Starting checks..."
 
-echo "[ bin/check ] Checking dependencies"
-go mod tidy
+# Track overall status
+FAILED_CHECKS=()
 
-echo "[ bin/check ] Formatting templates"
-templ fmt .
+echo "[ bin/check ] Cleaning generated files..."
+./bin/clean
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ bin/clean failed. Please fix the issues."
+    FAILED_CHECKS+=("bin/clean")
+fi
 
-echo "[ bin/check ] Generating Go code from templates"
-templ generate
+echo "[ bin/check ] Formatting templ files..."
+templ fmt . 2> /dev/null
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ templ fmt failed. Please fix the issues."
+    FAILED_CHECKS+=("templ fmt")
+fi
 
-echo "[ bin/check ] Vetting"
-go vet ./...
+echo "[ bin/check ] Generating Go source from templ files..."
+templ generate --include-version=false 2> /dev/null
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ templ generate failed. Please fix the issues."
+    FAILED_CHECKS+=("templ generate")
+fi
 
-echo "[ bin/check ] Building"
-go build -v -o /dev/null ./...
+echo "[ bin/check ] Running: go mod tidy"
+go mod tidy && git diff --quiet go.mod go.sum
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ go mod tidy made changes. Please run 'go mod tidy' and commit the changes."
+    FAILED_CHECKS+=("go mod tidy")
+fi
 
-echo "[ bin/check ] Running tests"
-go test -v -count=1 -shuffle=on ./...
+echo "[ bin/check ] Running: go mod download"
+go mod download
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ go mod download failed. Please fix the issues."
+    FAILED_CHECKS+=("go mod download")
+fi
+
+echo "[ bin/check ] Running: go mod verify"
+go mod verify > /dev/null
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ go mod verify found issues. Please fix them."
+    FAILED_CHECKS+=("go mod verify")
+fi
+
+echo "[ bin/check ] Running: staticcheck"
+go tool staticcheck ./... > /dev/null
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ staticcheck found issues. Please fix them."
+    FAILED_CHECKS+=("staticcheck")
+fi
+
+echo "[ bin/check ] Running: gosec"
+go tool gosec --quiet ./... > /dev/null
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ gosec found issues. Please fix them."
+    FAILED_CHECKS+=("gosec")
+fi
+
+echo "[ bin/check ] Running: gofmt"
+output=$(gofmt -e -l -s .)
+if [ -n "$output" ]; then
+    echo "[ bin/check ] ❗ gofmt found issues. Please run 'gofmt -w -s .' and commit the changes."
+    FAILED_CHECKS+=("gofmt")
+fi
+
+echo "[ bin/check ] Running: go vet"
+go vet ./... > /dev/null
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ go vet found issues. Please fix them."
+    FAILED_CHECKS+=("go vet")
+fi
+
+echo "[ bin/check ] Running: go test"
+go test -v --count=1 --shuffle=on --race ./... > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ go test failed. Please fix the issues."
+    FAILED_CHECKS+=("go test")
+fi
+
+echo "[ bin/check ] Running: go build"
+go build -o /dev/null . 2> /dev/null
+if [ $? -ne 0 ]; then
+    echo "[ bin/check ] ❗ go build failed. Please fix the issues."
+    FAILED_CHECKS+=("go build")
+fi
+
+# Report results
+if [ ${#FAILED_CHECKS[@]} -eq 0 ]; then
+    echo "[ bin/check ] ✅ All checks passed!"
+else
+    echo ""
+    echo "[ bin/check ] ❌ ${#FAILED_CHECKS[@]} check(s) failed:"
+    for check in "${FAILED_CHECKS[@]}"; do
+        echo "  - $check"
+    done
+    exit 1
+fi

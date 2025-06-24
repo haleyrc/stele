@@ -1,0 +1,38 @@
+package pages
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/template/components"
+	"github.com/haleyrc/stele/internal/templx"
+	"github.com/haleyrc/stele/internal/textutil"
+)
+
+// SeriesIndex renders the index page for a series.
+templ SeriesIndex(series site.Series) {
+	<div>
+		<h1 class="text-3xl font-light mb-4">{ series.Metadata.Name }</h1>
+		if series.Metadata.Description != "" {
+			<p class="text-gray-700 mb-6">{ series.Metadata.Description }</p>
+		}
+		<div class="space-y-6">
+			for i, post := range series.Posts {
+				<article class="pb-4">
+					<h2 class="text-xl font-light mb-2">
+						<a class="hover:underline" href={ templx.URLf("/posts/%s", post.Slug) }>
+							@components.PartTitle(post)
+						</a>
+					</h2>
+					<div class="text-xs font-extralight text-gray-600 mb-2">
+						{ post.Frontmatter.Timestamp.Format("January 2, 2006") }
+					</div>
+					<p class="text-sm text-gray-700">
+						{ textutil.Truncate(post.Frontmatter.Description, 150) }
+					</p>
+				</article>
+				if i < len(series.Posts)-1 {
+					<hr/>
+				}
+			}
+		</div>
+	</div>
+}

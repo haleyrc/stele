@@ -1,5 +1,5 @@
 // Package markdown contains thin wrappers around third-party markdown
-// implementations.
+// implementations for the v3 module.
 package markdown
 
 import (
@@ -24,10 +24,9 @@ var defaultParser = goldmark.New(
 	),
 )
 
-// Parse reads the file at path and writes the converted markdown content to
-// w.
+// Parse reads the file at path and writes the converted markdown content to w.
 func Parse(path string, w io.Writer) error {
-	contents, err := os.ReadFile(path)
+	contents, err := os.ReadFile(path) // #nosec G304 - User-specified markdown file is intentional
 	if err != nil {
 		return fmt.Errorf("markdown: parse: %w", err)
 	}
@@ -44,7 +43,7 @@ func Parse(path string, w io.Writer) error {
 func ParseFrontmatter(path string, fm any) error {
 	ctx := parser.NewContext()
 
-	contents, err := os.ReadFile(path)
+	contents, err := os.ReadFile(path) // #nosec G304 - User-specified markdown file is intentional
 	if err != nil {
 		return fmt.Errorf("markdown: parse frontmatter: %w", err)
 	}

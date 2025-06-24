@@ -1,0 +1,15 @@
+package pages
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/template/components"
+)
+
+// PostList renders a page containing a list of posts that share a common key
+// e.g. posts for a specific year or tag.
+templ PostList(heading string, posts site.Posts) {
+	<h1 class="text-xl font-bold pb-2">
+		{ heading }
+	</h1>
+	@components.PostList(posts)
+}

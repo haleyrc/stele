@@ -1,0 +1,36 @@
+package components
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/templx"
+)
+
+// SeriesNav renders navigation for a post that belongs to a series.
+templ SeriesNav(info site.SeriesPostInfo) {
+	<div class="mb-8">
+		<div class="mb-3">
+			<span class="text-sm text-gray-600">This is a post in the </span>
+			<a class="text-sm font-medium text-blue-600 hover:underline" href={ templx.URLf("/%s", info.Series.Slug) }>
+				{ info.Series.Metadata.Name }
+			</a>
+			<span class="text-sm text-gray-600">series.</span>
+		</div>
+		<nav class="text-sm" aria-label="Series navigation">
+			<ul class="space-y-2">
+				for _, post := range info.Series.Posts {
+					<li>
+						if post.Slug == info.Series.Posts[info.Position-1].Slug {
+							<span class="text-gray-900 font-medium">
+								@PartTitle(post)
+							</span>
+						} else {
+							<a class="text-blue-600 hover:underline" href={ templx.URLf("/posts/%s", post.Slug) }>
+								@PartTitle(post)
+							</a>
+						}
+					</li>
+				}
+			</ul>
+		</nav>
+	</div>
+}

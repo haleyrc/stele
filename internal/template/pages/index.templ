@@ -1,0 +1,22 @@
+package pages
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/template/components"
+)
+
+// Index renders the "home" page.
+templ Index(latestPost *site.Post, recentPosts site.Posts) {
+	if latestPost != nil {
+		@components.Post(latestPost, nil)
+	}
+	if len(recentPosts) > 0 {
+		<hr class="my-4"/>
+		<section>
+			<h2 class="text-lg font-extralight pb-2">
+				Recent posts
+			</h2>
+			@components.PostList(recentPosts)
+		</section>
+	}
+}

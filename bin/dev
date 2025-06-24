@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+echo "[ bin/dev ] Building stele binary"
+go build -o /tmp/stele-dev . > /dev/null 2>&1
+
+echo "[ bin/dev ] Starting development server"
+echo "------------------------------------------------------"
+cd internal/site/testdata
+/tmp/stele-dev dev

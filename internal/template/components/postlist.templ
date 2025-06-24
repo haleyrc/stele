@@ -1,0 +1,40 @@
+package components
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/template/components/icons"
+	"github.com/haleyrc/stele/internal/templx"
+)
+
+// PostList renders a list of posts.
+templ PostList(posts site.Posts) {
+	<table>
+		<tbody>
+			for _, post := range posts {
+				@postListEntry(post)
+			}
+		</tbody>
+	</table>
+}
+
+templ postListEntry(post *site.Post) {
+	<tr>
+		<td class="pr-4">
+			{ post.Frontmatter.Timestamp.Format("2006-01-02") }:
+		</td>
+		<td>
+			if post.Frontmatter.Draft {
+				<span class="inline-flex items-center mr-1 text-gray-500" title="Draft post">
+					@icons.PencilSquare(3)
+				</span>
+			}
+			<a class="hover:underline" href={ templx.URLf("/posts/%s", post.Slug) }>
+				if post.Series != nil {
+					@SeriesPostTitle(post)
+				} else {
+					{ post.Frontmatter.Title }
+				}
+			</a>
+		</td>
+	</tr>
+}

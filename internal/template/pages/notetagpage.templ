@@ -1,0 +1,14 @@
+package pages
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/template/components"
+)
+
+// NoteTagPage renders a page containing a list of notes that share a common tag.
+templ NoteTagPage(heading string, notes site.Notes) {
+	<h1 class="text-xl font-bold pb-2">
+		{ heading }
+	</h1>
+	@components.NoteList(notes)
+}

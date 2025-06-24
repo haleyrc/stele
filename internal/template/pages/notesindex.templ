@@ -1,0 +1,39 @@
+package pages
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/template/components"
+	"github.com/haleyrc/stele/internal/templx"
+	"strconv"
+)
+
+// NotesIndex renders the notes index page with pinned notes and tag index.
+templ NotesIndex(s *site.Site) {
+	if len(s.Notes) == 0 {
+		<p>No notes available.</p>
+	} else {
+		if pinnedNotes := s.Notes.Pinned(); len(pinnedNotes) > 0 {
+			<section class="mb-8">
+				@components.NoteList(pinnedNotes)
+			</section>
+		}
+		if s.Notes.HasTags() {
+			<section>
+				<h1 class="text-xl font-bold pb-2">Browse by Tag</h1>
+				@noteTagIndex(s.Notes.IndexByTag())
+			</section>
+		}
+	}
+}
+
+templ noteTagIndex(entries []site.NoteIndexEntry) {
+	<ul>
+		for _, entry := range entries {
+			<li>
+				<a class="hover:underline" href={ templx.URLf("/notes/tags/%s", entry.Key) }>
+					{ entry.Key } ({ strconv.Itoa(len(entry.Notes)) })
+				</a>
+			</li>
+		}
+	</ul>
+}

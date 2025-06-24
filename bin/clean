@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+SOURCEMAPS=$(fd --type file --color never --extension html --no-ignore _templ_sourcemap)
+GENERATED=$(fd --type file --color never --extension go _templ)
+
+rm -rf $SOURCEMAPS $GENERATED

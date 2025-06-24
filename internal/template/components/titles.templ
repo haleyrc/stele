@@ -1,0 +1,18 @@
+package components
+
+import (
+	"fmt"
+	"github.com/haleyrc/stele/internal/site"
+)
+
+// SeriesPostTitle renders a fully-formatted series post title.
+// Format: "Series Name: Part X - Post Title"
+templ SeriesPostTitle(post *site.Post) {
+	{ fmt.Sprintf("%s: Part %d - %s", post.Series.Metadata.Name, post.SeriesPosition(), post.Frontmatter.Title) }
+}
+
+// PartTitle renders a part-prefixed title for use in series contexts.
+// Format: "Part X: Post Title"
+templ PartTitle(post *site.Post) {
+	{ fmt.Sprintf("Part %d: %s", post.SeriesPosition(), post.Frontmatter.Title) }
+}

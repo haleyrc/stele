@@ -1,0 +1,21 @@
+package pages
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/templx"
+	"strconv"
+)
+
+// PostIndex renders a page containing a list of posts bucketed by a shared key
+// e.g. an archive by year or listing by tag.
+templ PostIndex(entries []site.PostIndexEntry, prefix string) {
+	<ul>
+		for _, entry := range entries {
+			<li>
+				<a class="hover:underline" href={ templx.URLf("%s%s", prefix, entry.Key) }>
+					{ entry.Key } ({ strconv.Itoa(len(entry.Posts)) })
+				</a>
+			</li>
+		}
+	</ul>
+}

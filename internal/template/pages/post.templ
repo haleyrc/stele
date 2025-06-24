@@ -1,0 +1,11 @@
+package pages
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/template/components"
+)
+
+// Post renders a page for a single blog post with optional series info.
+templ Post(post *site.Post, seriesInfo *site.SeriesPostInfo) {
+	@components.Post(post, seriesInfo)
+}

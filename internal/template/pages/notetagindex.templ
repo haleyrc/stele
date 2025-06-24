@@ -1,0 +1,20 @@
+package pages
+
+import (
+	"github.com/haleyrc/stele/internal/site"
+	"github.com/haleyrc/stele/internal/templx"
+	"strconv"
+)
+
+// NoteTagIndex renders a page containing a list of notes bucketed by tag.
+templ NoteTagIndex(entries []site.NoteIndexEntry) {
+	<ul>
+		for _, entry := range entries {
+			<li>
+				<a class="hover:underline" href={ templx.URLf("/notes/tags/%s", entry.Key) }>
+					{ entry.Key } ({ strconv.Itoa(len(entry.Notes)) })
+				</a>
+			</li>
+		}
+	</ul>
+}
