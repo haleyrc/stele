@@ -28,11 +28,11 @@ var defaultParser = goldmark.New(
 func Parse(path string, w io.Writer) error {
 	contents, err := os.ReadFile(path) // #nosec G304 - User-specified markdown file is intentional
 	if err != nil {
-		return fmt.Errorf("markdown: parse: %w", err)
+		return fmt.Errorf("markdown: parse: %s: %w", path, err)
 	}
 
 	if err := defaultParser.Convert(contents, w); err != nil {
-		return fmt.Errorf("markdown: parse: %w", err)
+		return fmt.Errorf("markdown: parse: %s: %w", path, err)
 	}
 
 	return nil
@@ -45,15 +45,15 @@ func ParseFrontmatter(path string, fm any) error {
 
 	contents, err := os.ReadFile(path) // #nosec G304 - User-specified markdown file is intentional
 	if err != nil {
-		return fmt.Errorf("markdown: parse frontmatter: %w", err)
+		return fmt.Errorf("markdown: parse frontmatter: %s: %w", path, err)
 	}
 
 	if err := defaultParser.Convert(contents, io.Discard, parser.WithContext(ctx)); err != nil {
-		return fmt.Errorf("markdown: parse frontmatter: %w", err)
+		return fmt.Errorf("markdown: parse frontmatter: %s: %w", path, err)
 	}
 
 	if err := frontmatter.Get(ctx).Decode(fm); err != nil {
-		return fmt.Errorf("markdown: parse frontmatter: %w", err)
+		return fmt.Errorf("markdown: parse frontmatter: %s: %w", path, err)
 	}
 
 	return nil

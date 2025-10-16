@@ -235,16 +235,16 @@ func LoadSiteConfig(dir string) (*SiteConfig, error) {
 	path := filepath.Join(dir, "stele.yaml")
 	bytes, err := os.ReadFile(path) // #nosec G304 - User-controlled config file path is intentional
 	if err != nil {
-		return nil, fmt.Errorf("load site config: %w", err)
+		return nil, fmt.Errorf("load site config: %s: %w", path, err)
 	}
 
 	var cfg SiteConfig
 	if err := yaml.Unmarshal(bytes, &cfg); err != nil {
-		return nil, fmt.Errorf("load site config: %w", err)
+		return nil, fmt.Errorf("load site config: %s: %w", path, err)
 	}
 
 	if err := cfg.Validate(); err != nil {
-		return nil, fmt.Errorf("load site config: %w", err)
+		return nil, fmt.Errorf("load site config: %s: %w", path, err)
 	}
 
 	return &cfg, nil

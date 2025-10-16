@@ -75,7 +75,7 @@ func LoadPost(path string) (*Post, error) {
 	}
 
 	if err := fm.Validate(); err != nil {
-		return nil, fmt.Errorf("load post: %w", err)
+		return nil, fmt.Errorf("load post: %s: %w", path, err)
 	}
 
 	if fm.Draft {

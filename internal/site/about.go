@@ -26,7 +26,7 @@ func LoadAbout(dir string) (*About, error) {
 		if errors.Is(err, os.ErrNotExist) {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("load about: %w", err)
+		return nil, fmt.Errorf("load about: %s: %w", path, err)
 	}
 
 	var content strings.Builder

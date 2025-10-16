@@ -59,7 +59,7 @@ func LoadNote(path string) (*Note, error) {
 	}
 
 	if err := fm.Validate(); err != nil {
-		return nil, fmt.Errorf("load note: %w", err)
+		return nil, fmt.Errorf("load note: %s: %w", path, err)
 	}
 
 	var content strings.Builder

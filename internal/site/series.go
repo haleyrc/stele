@@ -46,16 +46,16 @@ func LoadSeries(dir string, includeDrafts bool) (*Series, error) {
 	indexPath := filepath.Join(dir, "index.yaml")
 	bytes, err := os.ReadFile(indexPath) // #nosec G304 - User-controlled config file path is intentional
 	if err != nil {
-		return nil, fmt.Errorf("load series: %w", err)
+		return nil, fmt.Errorf("load series: %s: %w", indexPath, err)
 	}
 
 	var metadata SeriesMetadata
 	if err := yaml.Unmarshal(bytes, &metadata); err != nil {
-		return nil, fmt.Errorf("load series: %w", err)
+		return nil, fmt.Errorf("load series: %s: %w", indexPath, err)
 	}
 
 	if err := metadata.Validate(); err != nil {
-		return nil, fmt.Errorf("load series: %w", err)
+		return nil, fmt.Errorf("load series: %s: %w", indexPath, err)
 	}
 
 	// Load all posts in the series directory
