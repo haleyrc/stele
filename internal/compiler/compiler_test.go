@@ -145,7 +145,10 @@ func assertFileNotExists(t *testing.T, label, path string) {
 // Tests
 
 func TestCompiler_CreatesDirectoryStructure(t *testing.T) {
-	testSite, err := site.New("../site/testdata", site.SiteOptions{IncludeDrafts: true})
+	testSite, err := site.New("../site/testdata", site.SiteOptions{
+		IncludeDrafts:   true,
+		NotesExperiment: true,
+	})
 	assert.OK(t, err).Fatal()
 
 	renderer := newMockRenderer()
@@ -179,7 +182,10 @@ func TestCompiler_CreatesDirectoryStructure(t *testing.T) {
 }
 
 func TestCompiler_CompleteBuild(t *testing.T) {
-	testSite, err := site.New("../site/testdata", site.SiteOptions{IncludeDrafts: true})
+	testSite, err := site.New("../site/testdata", site.SiteOptions{
+		IncludeDrafts:   true,
+		NotesExperiment: true,
+	})
 	assert.OK(t, err).Fatal()
 
 	renderer := newMockRenderer()
@@ -332,7 +338,10 @@ func TestCompiler_OptionalAboutPage(t *testing.T) {
 }
 
 func TestCompiler_RendererCalledForAllPages(t *testing.T) {
-	testSite, err := site.New("../site/testdata", site.SiteOptions{IncludeDrafts: true})
+	testSite, err := site.New("../site/testdata", site.SiteOptions{
+		IncludeDrafts:   true,
+		NotesExperiment: true,
+	})
 	assert.OK(t, err).Fatal()
 
 	renderer := newMockRenderer()
