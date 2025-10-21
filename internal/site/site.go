@@ -15,6 +15,9 @@ import (
 type SiteOptions struct {
 	// Whether to include draft posts in the site.
 	IncludeDrafts bool
+
+	// Whether to enable the experimental notes feature.
+	NotesExperiment bool
 }
 
 // Site represents a complete blog site with configuration and content.
@@ -62,11 +65,13 @@ func New(dir string, opts SiteOptions) (*Site, error) {
 	}
 	log.Printf("Loaded about page (%v)", dur)
 
-	dur, err = logPhase("Loading notes", s.loadNotes)
-	if err != nil {
-		return nil, fmt.Errorf("new site: %w", err)
+	if s.Opts.NotesExperiment {
+		dur, err = logPhase("Loading notes", s.loadNotes)
+		if err != nil {
+			return nil, fmt.Errorf("new site: %w", err)
+		}
+		log.Printf("Loaded %d notes (%v)", len(s.Notes), dur)
 	}
-	log.Printf("Loaded %d notes (%v)", len(s.Notes), dur)
 
 	dur, err = logPhase("Loading series", s.loadSeries)
 	if err != nil {

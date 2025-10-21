@@ -44,12 +44,14 @@ func (c *Compiler) Compile(ctx context.Context, dstDir, srcDir string) error {
 		return fmt.Errorf("build: %w", err)
 	}
 
-	if err := c.renderNotesToFiles(ctx, dstDir); err != nil {
-		return fmt.Errorf("build: %w", err)
-	}
+	if len(c.Site.Notes) > 0 {
+		if err := c.renderNotesToFiles(ctx, dstDir); err != nil {
+			return fmt.Errorf("build: %w", err)
+		}
 
-	if err := c.renderNoteTagsToFiles(ctx, dstDir); err != nil {
-		return fmt.Errorf("build: %w", err)
+		if err := c.renderNoteTagsToFiles(ctx, dstDir); err != nil {
+			return fmt.Errorf("build: %w", err)
+		}
 	}
 
 	if err := c.renderPostsToFiles(ctx, dstDir); err != nil {
@@ -92,12 +94,14 @@ func (c *Compiler) createOutputDirectory(dir string) error {
 		return fmt.Errorf("create output directory: %w", err)
 	}
 
-	if err := os.Mkdir(filepath.Join(dir, "notes"), 0750); err != nil {
-		return fmt.Errorf("create output directory: %w", err)
-	}
+	if len(c.Site.Notes) > 0 {
+		if err := os.Mkdir(filepath.Join(dir, "notes"), 0750); err != nil {
+			return fmt.Errorf("create output directory: %w", err)
+		}
 
-	if err := os.Mkdir(filepath.Join(dir, "notes", "tags"), 0750); err != nil {
-		return fmt.Errorf("create output directory: %w", err)
+		if err := os.Mkdir(filepath.Join(dir, "notes", "tags"), 0750); err != nil {
+			return fmt.Errorf("create output directory: %w", err)
+		}
 	}
 
 	if err := os.Mkdir(filepath.Join(dir, "posts"), 0750); err != nil {

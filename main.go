@@ -62,12 +62,14 @@ func printUsage() {
 func runBuild(ctx context.Context) {
 	buildFlags := flag.NewFlagSet("build", flag.ExitOnError)
 	outDir := buildFlags.String("out", "dist", "Output directory for build")
+	notesExperiment := buildFlags.Bool("notes-experiment", false, "Enable experimental notes feature")
 	if err := buildFlags.Parse(os.Args[2:]); err != nil {
 		exitWithError(err)
 	}
 
 	site, err := site.New(".", site.SiteOptions{
-		IncludeDrafts: false,
+		IncludeDrafts:   false,
+		NotesExperiment: *notesExperiment,
 	})
 	if err != nil {
 		exitWithError(err)
@@ -84,6 +86,7 @@ func runDev(ctx context.Context) {
 	devFlags := flag.NewFlagSet("dev", flag.ExitOnError)
 	port := devFlags.String("port", "3000", "Port to listen on")
 	live := devFlags.Bool("live", false, "Exclude draft posts (live mode)")
+	notesExperiment := devFlags.Bool("notes-experiment", false, "Enable experimental notes feature")
 	if err := devFlags.Parse(os.Args[2:]); err != nil {
 		exitWithError(err)
 	}
@@ -92,7 +95,8 @@ func runDev(ctx context.Context) {
 	defer cancel()
 
 	cache, err := server.NewSiteCache(".", site.SiteOptions{
-		IncludeDrafts: !*live,
+		IncludeDrafts:   !*live,
+		NotesExperiment: *notesExperiment,
 	})
 	if err != nil {
 		exitWithError(err)
@@ -148,9 +152,11 @@ COMMANDS
   version    Print version information
 
 BUILD OPTIONS
-  --out      Output directory (default: "dist")
+  --out               Output directory (default: "dist")
+  --notes-experiment  Enable experimental notes feature (default: false)
 
 DEV OPTIONS
-  --port     Port to listen on (default: "3000")
-  --live     Exclude draft posts (default: false)
+  --port              Port to listen on (default: "3000")
+  --live              Exclude draft posts (default: false)
+  --notes-experiment  Enable experimental notes feature (default: false)
 `
