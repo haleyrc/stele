@@ -50,11 +50,11 @@ func NewServer(renderer site.Renderer) *Server {
 
 // renderHTML renders HTML content using a buffered approach to ensure errors
 // are caught before sending any response to the client.
-func (s *Server) renderHTML(w http.ResponseWriter, r *http.Request, renderFn func(context.Context, io.Writer) error) {
+func (s *Server) renderHTML(w http.ResponseWriter, r *http.Request, handlerName string, renderFn func(context.Context, io.Writer) error) {
 	ctx := r.Context()
 	var buf bytes.Buffer
 	if err := renderFn(ctx, &buf); err != nil {
-		log.Printf("ERR: %v", err)
+		log.Printf("ERR: %s: %s: %v", handlerName, r.URL.Path, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -65,7 +65,7 @@ func (s *Server) renderHTML(w http.ResponseWriter, r *http.Request, renderFn fun
 // HandleIndex serves the index page for the site.
 func (s *Server) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	site := SiteFromContext(r.Context())
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleIndex", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderIndex(ctx, w, site)
 	})
 }
@@ -78,7 +78,7 @@ func (s *Server) HandleAbout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleAbout", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderAbout(ctx, w, site, site.About)
 	})
 }
@@ -86,7 +86,7 @@ func (s *Server) HandleAbout(w http.ResponseWriter, r *http.Request) {
 // HandleNotesIndex serves the notes index page.
 func (s *Server) HandleNotesIndex(w http.ResponseWriter, r *http.Request) {
 	site := SiteFromContext(r.Context())
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleNotesIndex", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderNotesIndex(ctx, w, site)
 	})
 }
@@ -100,7 +100,7 @@ func (s *Server) HandleNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleNote", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderNote(ctx, w, site, note)
 	})
 }
@@ -108,7 +108,7 @@ func (s *Server) HandleNote(w http.ResponseWriter, r *http.Request) {
 // HandleNoteTagIndex serves the note tags index page.
 func (s *Server) HandleNoteTagIndex(w http.ResponseWriter, r *http.Request) {
 	site := SiteFromContext(r.Context())
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleNoteTagIndex", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderNoteTagIndex(ctx, w, site)
 	})
 }
@@ -124,7 +124,7 @@ func (s *Server) HandleNoteTagPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleNoteTagPage", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderNoteTagPage(ctx, w, site, tag, notes)
 	})
 }
@@ -137,7 +137,7 @@ func (s *Server) HandleManifest(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/manifest+json")
 	if err := s.Renderer.RenderManifest(ctx, w, site, manifest); err != nil {
-		log.Printf("ERR: %v", err)
+		log.Printf("ERR: HandleManifest: %s: %v", r.URL.Path, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -151,7 +151,7 @@ func (s *Server) HandleRSS(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/rss+xml")
 	if err := s.Renderer.RenderRSSFeed(ctx, w, site, feed); err != nil {
-		log.Printf("ERR: %v", err)
+		log.Printf("ERR: HandleRSS: %s: %v", r.URL.Path, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -166,7 +166,7 @@ func (s *Server) HandlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandlePost", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderPost(ctx, w, site, post)
 	})
 }
@@ -184,7 +184,7 @@ func (s *Server) HandleSeriesPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleSeriesPost", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderPost(ctx, w, site, post)
 	})
 }
@@ -200,7 +200,7 @@ func (s *Server) HandleSeriesIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleSeriesIndex", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderSeriesIndex(ctx, w, site, series)
 	})
 }
@@ -208,7 +208,7 @@ func (s *Server) HandleSeriesIndex(w http.ResponseWriter, r *http.Request) {
 // HandleTagIndex serves the tags index page.
 func (s *Server) HandleTagIndex(w http.ResponseWriter, r *http.Request) {
 	site := SiteFromContext(r.Context())
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleTagIndex", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderTagIndex(ctx, w, site)
 	})
 }
@@ -224,7 +224,7 @@ func (s *Server) HandleTagPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleTagPage", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderTagPage(ctx, w, site, tag, posts)
 	})
 }
@@ -232,7 +232,7 @@ func (s *Server) HandleTagPage(w http.ResponseWriter, r *http.Request) {
 // HandleArchiveIndex serves the archive index page.
 func (s *Server) HandleArchiveIndex(w http.ResponseWriter, r *http.Request) {
 	site := SiteFromContext(r.Context())
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleArchiveIndex", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderArchiveIndex(ctx, w, site)
 	})
 }
@@ -248,7 +248,7 @@ func (s *Server) HandleArchivePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.renderHTML(w, r, func(ctx context.Context, w io.Writer) error {
+	s.renderHTML(w, r, "HandleArchivePage", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderArchivePage(ctx, w, site, year, posts)
 	})
 }
@@ -258,7 +258,7 @@ func (s *Server) Handle404(w http.ResponseWriter, r *http.Request) {
 	site := SiteFromContext(r.Context())
 	var buf bytes.Buffer
 	if err := s.Renderer.Render404(r.Context(), &buf, site); err != nil {
-		log.Printf("ERR: %v", err)
+		log.Printf("ERR: Handle404: %s: %v", r.URL.Path, err)
 		http.Error(w, "Not Found", http.StatusNotFound)
 		return
 	}
