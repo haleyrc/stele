@@ -381,6 +381,8 @@ That's really all you need to get started. Everything else is handled by the fra
 
 - Homebrew deployment
 - Better image handling
+- Client-side latex rendering
+- Don't inject reload.js in prod build
 
 ## Alternatives
 
