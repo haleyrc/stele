@@ -21,7 +21,7 @@ func NewTemplateRenderer() *TemplateRenderer {
 func (r *TemplateRenderer) RenderIndex(ctx context.Context, w io.Writer, site *site.Site) error {
 	recentPosts := site.Posts.Recent(11)
 	latestPost, remainingPosts := recentPosts.Head()
-	return Layout("Home", site, pages.Index(latestPost, remainingPosts)).Render(ctx, w)
+	return Layout("Home Page", site, pages.Index(latestPost, remainingPosts)).Render(ctx, w)
 }
 
 // RenderPost renders a single post page using templ components.
