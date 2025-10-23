@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 
-	katex "github.com/FurqanSoftware/goldmark-katex"
 	"github.com/yuin/goldmark"
 	emoji "github.com/yuin/goldmark-emoji"
 	"github.com/yuin/goldmark/extension"
@@ -20,7 +19,6 @@ var defaultParser = goldmark.New(
 		emoji.Emoji,
 		extension.GFM,
 		&frontmatter.Extender{},
-		&katex.Extender{},
 	),
 )
 

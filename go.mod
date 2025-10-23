@@ -3,7 +3,6 @@ module github.com/haleyrc/stele
 go 1.25
 
 require (
-	github.com/FurqanSoftware/goldmark-katex v0.0.0-20250906161933-da324498b7cf
 	github.com/a-h/templ v0.3.943
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/haleyrc/assert v0.0.1
@@ -22,7 +21,6 @@ require (
 	github.com/a-h/parse v0.0.0-20250122154542-74294addb73e // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/anthropics/anthropic-sdk-go v1.12.0 // indirect
-	github.com/bluele/gcache v0.0.2 // indirect
 	github.com/ccojocar/zxcvbn-go v1.0.4 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cli/browser v1.3.0 // indirect
@@ -37,7 +35,6 @@ require (
 	github.com/googleapis/gax-go/v2 v2.15.0 // indirect
 	github.com/gookit/color v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
-	github.com/lithdew/quickjs v0.0.0-20200714182134-aaa42285c9d2 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/natefinch/atomic v1.0.1 // indirect
