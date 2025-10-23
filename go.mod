@@ -61,6 +61,7 @@ require (
 )
 
 tool (
+	github.com/a-h/templ/cmd/templ
 	github.com/securego/gosec/v2/cmd/gosec
 	honnef.co/go/tools/cmd/staticcheck
 )

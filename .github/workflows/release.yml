@@ -12,8 +12,31 @@ jobs:
   test:
     uses: haleyrc/actions/.github/workflows/go-test.yml@main
 
-  release:
+  check-templ:
     needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Format templ files
+        run: go tool templ fmt .
+
+      - name: Check for changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Error: templ files are not formatted. Please run 'go tool templ fmt .'"
+            git diff
+            exit 1
+          fi
+
+  release:
+    needs: [test, check-templ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
