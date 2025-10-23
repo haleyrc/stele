@@ -3,7 +3,7 @@ version: 2
 builds:
   - main: .
     env:
-      - CGO_ENABLED=0
+      - CGO_ENABLED=1
     flags:
       - -v
     goos:
