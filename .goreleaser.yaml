@@ -34,6 +34,23 @@ changelog:
       - "^docs:"
       - "^test:"
       - "^chore:"
+  groups:
+    - title: "Features"
+      regexp: "^feat"
+      order: 0
+    - title: "Bug Fixes"
+      regexp: "^fix"
+      order: 1
+    - title: "Other Changes"
+      regexp: "^refactor|^perf|^style"
+      order: 2
+
+release:
+  prerelease: auto
+  name_template: "{{.Version}}"
+  github:
+    owner: haleyrc
+    name: stele
 
 upx:
   - enabled: true
