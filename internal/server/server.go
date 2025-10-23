@@ -31,6 +31,7 @@ func NewServer(renderer site.Renderer) *Server {
 	// Content endpoints
 	s.HandleFunc("GET /", s.HandleIndex)
 	s.HandleFunc("GET /about", s.HandleAbout)
+	s.HandleFunc("GET /favicon.ico", s.HandleFavicon)
 	s.HandleFunc("GET /manifest.webmanifest", s.HandleManifest)
 	s.HandleFunc("GET /rss.xml", s.HandleRSS)
 	s.HandleFunc("GET /notes", s.HandleNotesIndex)
@@ -81,6 +82,11 @@ func (s *Server) HandleAbout(w http.ResponseWriter, r *http.Request) {
 	s.renderHTML(w, r, "HandleAbout", func(ctx context.Context, w io.Writer) error {
 		return s.Renderer.RenderAbout(ctx, w, site, site.About)
 	})
+}
+
+// HandleFavicon handles requests for /favicon.ico by returning 204 No Content.
+func (s *Server) HandleFavicon(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNoContent)
 }
 
 // HandleNotesIndex serves the notes index page.
