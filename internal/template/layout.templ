@@ -70,9 +70,11 @@ templ Layout(pageName string, site *site.Site, contents templ.Component) {
 								notes
 							</a>
 						}
-						<a class="pl-2 hover:underline" href={ templ.URL("/about") }>
-							about
-						</a>
+						if site.About != nil || site.HasSocialLinks() {
+							<a class="pl-2 hover:underline" href={ templ.URL("/about") }>
+								about
+							</a>
+						}
 						<a class="pl-2 hover:underline" href={ templ.URL("rss.xml") }>
 							@icons.RSS(4)
 						</a>
@@ -107,9 +109,11 @@ templ Layout(pageName string, site *site.Site, contents templ.Component) {
 							notes
 						</a>
 					}
-					<a class="border-b py-2 hover:bg-gray-100 text-center" href={ templ.URL("/about") }>
-						about
-					</a>
+					if site.About != nil || site.HasSocialLinks() {
+						<a class="border-b py-2 hover:bg-gray-100 text-center" href={ templ.URL("/about") }>
+							about
+						</a>
+					}
 					<a class="border-b py-2 hover:bg-gray-100 text-center inline-flex items-center justify-center gap-1" href={ templ.URL("rss.xml") }>
 						@icons.RSS(4)
 						rss

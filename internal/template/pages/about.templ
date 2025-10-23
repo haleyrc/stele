@@ -8,11 +8,13 @@ import (
 // About renders the about page with markdown content and social links.
 templ About(s *site.Site, about site.About) {
 	<article>
-		<div class="markdown">
-			@templ.Raw(about.Content)
-		</div>
+		if about.Content != "" {
+			<div class="markdown">
+				@templ.Raw(about.Content)
+			</div>
+		}
 		if s.Config.Social.GitHub != "" || s.Config.Social.LinkedIn != "" {
-			<div class="mt-6 pt-6 border-t flex justify-center gap-4">
+			<div class={ templ.KV("mt-6 pt-6 border-t", about.Content != ""), "flex justify-center gap-4" }>
 				if s.Config.Social.GitHub != "" {
 					<a href={ templ.URL(s.Config.Social.GitHub) } target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 hover:underline">
 						@icons.GitHub(6)

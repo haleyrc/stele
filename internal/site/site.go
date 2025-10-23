@@ -160,6 +160,11 @@ func (s *Site) CopyrightYear() int {
 	return time.Now().Year()
 }
 
+// HasSocialLinks returns true if the site has any social media links configured.
+func (s *Site) HasSocialLinks() bool {
+	return s.Config.Social.GitHub != "" || s.Config.Social.LinkedIn != ""
+}
+
 // Manifest creates and returns the web manifest for the site.
 func (s *Site) Manifest() *Manifest {
 	return NewManifest(s)

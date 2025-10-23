@@ -134,13 +134,18 @@ func (c *Compiler) renderIndexToFile(ctx context.Context, dir string) error {
 }
 
 func (c *Compiler) renderAboutToFile(ctx context.Context, dir string) error {
-	if c.Site.About == nil {
+	// Only render about page if there's content OR social links
+	if c.Site.About == nil && !c.Site.HasSocialLinks() {
 		return nil
 	}
 
 	path := filepath.Join(dir, "about.html")
+	about := c.Site.About
+	if about == nil {
+		about = &site.About{}
+	}
 	return c.renderToFile(ctx, path, func(ctx context.Context, w *os.File) error {
-		return c.Renderer.RenderAbout(ctx, w, c.Site, c.Site.About)
+		return c.Renderer.RenderAbout(ctx, w, c.Site, about)
 	})
 }
 
