@@ -21,7 +21,7 @@ builds:
       - "-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}"
 
 archives:
-  - format: tar.gz
+  - formats: [tar.gz]
     name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
@@ -56,6 +56,12 @@ release:
     name: stele
 
 upx:
+  # UPX compression for Linux builds
   - enabled: true
+    goos: [linux]
     compress: best
     brute: true
+  # Disable UPX for Darwin/ARM64 due to known compatibility issues
+  - enabled: false
+    goos: [darwin]
+    goarch: [arm64]
