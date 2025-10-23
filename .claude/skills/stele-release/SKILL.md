@@ -26,9 +26,11 @@ Follow these steps in order to prepare and execute a release:
 
 Run the version analysis script to examine commits since the last tag:
 
+**IMPORTANT:** `python` is not available on this machine; make sure to use `python3` when invoking scripts.
+
 ```bash
 cd /Users/ryan/dev/haleyrc/stele
-python3 ~/.claude/skills/stele-release/scripts/analyze_version.py
+python3 .claude/skills/stele-release/scripts/analyze_version.py
 ```
 
 The script will:
@@ -41,7 +43,30 @@ The script will:
 
 Present the analysis results to the user and ask if they want to proceed with the suggested version or choose a different one.
 
-### Step 2: Verify Pre-Release Checks
+### Step 2: Ensure Branch is Synced with Remote
+
+**CRITICAL:** Before creating a tag, verify that all local commits are pushed to the remote repository. Tags should only point to commits that exist on the remote.
+
+```bash
+cd /Users/ryan/dev/haleyrc/stele
+git status
+```
+
+Check the output for "Your branch is ahead of 'origin/main' by X commit(s)". If the branch is ahead:
+
+1. Show the commits that are ahead:
+```bash
+git log origin/main..HEAD --oneline
+```
+
+2. Push the local commits to origin:
+```bash
+git push
+```
+
+If the branch is behind or diverged from origin, inform the user and ask how they want to proceed before continuing.
+
+### Step 3: Verify Pre-Release Checks
 
 Before creating a tag, ensure the codebase is ready:
 
@@ -53,9 +78,9 @@ go test ./...
 
 Both commands must pass successfully. If they fail, inform the user and ask if they want to fix the issues before proceeding.
 
-### Step 3: Create and Push the Version Tag
+### Step 4: Create and Push the Version Tag
 
-Once the version is confirmed and checks pass, create an annotated git tag:
+Once the branch is synced, version is confirmed, and checks pass, create an annotated git tag:
 
 ```bash
 cd /Users/ryan/dev/haleyrc/stele
@@ -65,7 +90,7 @@ git push origin v{VERSION}
 
 Replace `{VERSION}` with the actual version number (e.g., `1.0.0`, `1.0.0-beta.4`).
 
-### Step 4: Monitor the Release Workflow
+### Step 5: Monitor the Release Workflow
 
 After pushing the tag, the GitHub Actions release workflow will automatically:
 1. Run tests via the reusable workflow
@@ -81,7 +106,7 @@ Inform the user to:
 - Monitor the "Release" workflow
 - Verify completion and check for any errors
 
-### Step 5: Verify the Release
+### Step 6: Verify the Release
 
 Once the workflow completes, guide the user to verify:
 
@@ -109,7 +134,7 @@ For production-ready versions:
 
 For beta, alpha, or release candidate versions:
 - Format: `v1.0.0-beta.1`, `v2.0.0-alpha.1`, `v1.0.0-rc.1`
-- Automatically marked as pre-release by GoReleaser (configured with `prerelease: auto`)
+- Automatically marked as pre-release by GoReleaser (configured with prerelease: auto)
 - Useful for testing before stable release
 
 ## Semantic Versioning Guidelines
@@ -117,21 +142,21 @@ For beta, alpha, or release candidate versions:
 The version analysis script follows these rules:
 
 - **MAJOR** (v2.0.0): Breaking changes, incompatible API changes
-  - Detected by: commits with `BREAKING CHANGE` in body or `!` after type
+  - Detected by: commits with BREAKING CHANGE in body or ! after type
 - **MINOR** (v1.1.0): New features, backwards compatible
-  - Detected by: commits starting with `feat:` or `feat(`
+  - Detected by: commits starting with feat: or feat(
 - **PATCH** (v1.0.1): Bug fixes, backwards compatible
-  - Detected by: commits starting with `fix:` or `fix(`
+  - Detected by: commits starting with fix: or fix(
 
 ## Commit Convention Reference
 
 The project follows Conventional Commits:
-- `feat:` - New features (triggers minor bump)
-- `fix:` - Bug fixes (triggers patch bump)
-- `refactor:`, `perf:`, `style:` - Other changes (appear in "Other Changes" in changelog)
-- `docs:`, `test:`, `chore:` - Excluded from changelog
+- feat: - New features (triggers minor bump)
+- fix: - Bug fixes (triggers patch bump)
+- refactor:, perf:, style: - Other changes (appear in "Other Changes" in changelog)
+- docs:, test:, chore: - Excluded from changelog
 
-For detailed commit conventions, refer to `references/contributing.md`.
+For detailed commit conventions, refer to references/contributing.md.
 
 ## Rollback Procedures
 
@@ -159,13 +184,13 @@ Never delete a published release (users may have already downloaded it):
 
 ## GoReleaser Configuration Reference
 
-The `.goreleaser.yaml` file configures:
+The .goreleaser.yaml file configures:
 - **Target**: darwin/arm64 (macOS Apple Silicon)
 - **CGO**: Enabled (required for some dependencies)
 - **UPX**: Compression enabled for smaller binaries
-- **Pre-build hook**: `./bin/check` runs automatically
+- **Pre-build hook**: ./bin/check runs automatically
 - **Changelog**: Grouped by Features, Bug Fixes, Other Changes
-- **Ldflags**: Version injection (`main.version`, `main.commit`, `main.date`)
+- **Ldflags**: Version injection (main.version, main.commit, main.date)
 
 ## Resources
 
